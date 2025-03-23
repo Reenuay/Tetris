@@ -24,7 +24,7 @@ module GameBoard =
     /// </summary>
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
-    let private createCells<'a> (width: int) (height: int) =
+    let private createBoard<'a> (width: int) (height: int) =
         konst BoardCell<'a>.Empty
         |> List.init width
         |> konst
@@ -38,9 +38,9 @@ module GameBoard =
     /// <returns>A list of errors if the width is invalid.</returns>
     let private validateWidth width =
         if width < minWidth then
-            Failure [ WidthTooSmall(minWidth, width) ]
+            Error [ WidthTooSmall(minWidth, width) ]
         else
-            Success width
+            Ok width
 
     /// <summary>
     /// Validates the height of a game board.
@@ -49,9 +49,9 @@ module GameBoard =
     /// <returns>A list of errors if the height is invalid.</returns>
     let private validateHeight height =
         if height < minHeight then
-            Failure [ HeightTooSmall(minHeight, height) ]
+            Error [ HeightTooSmall(minHeight, height) ]
         else
-            Success height
+            Ok height
 
     /// <summary>
     /// Tries to create a game board with the specified width and height.
@@ -61,13 +61,13 @@ module GameBoard =
     /// <param name="height">The height of the game board.</param>
     /// <returns>A game board with the specified width and height and all cells initialized to empty state.</returns>
     let tryCreate<'a> width height =
-        createCells<'a> <!> validateWidth width <*> validateHeight height
+        createBoard<'a> <!> validateWidth width <*> validateHeight height
 
     /// <summary>
     /// Represents a standard 10x20 game board.
     /// </summary>
     let standard<'a> =
-        tryCreate<'a> 10 20 |> Validation.defaultWith (fun _ -> failwith "Unreachable")
+        tryCreate<'a> 10 20 |> Result.defaultWith (fun _ -> failwith "Unreachable")
 
 /// <summary>
 /// Contains functions for working with tetromino types.
