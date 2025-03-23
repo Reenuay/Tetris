@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Types.Errors.fs" />
+    <Compile Include="Types.Functions.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharpPlus" Version="1.7.0" />
   </ItemGroup>
 
 </Project>
