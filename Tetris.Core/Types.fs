@@ -55,4 +55,4 @@ type TetrominoRotation =
 /// Represents a tetromino figure that consists of a list of points.
 /// Each point represents a cell in the tetromino figure and is relative to the tetromino's origin.
 /// </summary>
-type TetrominoFigure = private TetrominoFigure of Point list
+type TetrominoPiece = private TetrominoPiece of Point list
