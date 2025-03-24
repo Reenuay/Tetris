@@ -1,4 +1,4 @@
-namespace Tetris.Core.Types
+namespace Tetris.Core
 
 
 /// <summary>

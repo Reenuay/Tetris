@@ -1,4 +1,4 @@
-﻿namespace Tetris.Core.Types
+﻿namespace Tetris.Core
 
 
 /// <summary>
@@ -35,6 +35,25 @@ type TetrominoType =
     | Z
 
 /// <summary>
+/// Represents the orientations of a tetromino piece on the game board.
+/// Default orientation is Up.
+/// </summary>
+[<RequireQualifiedAccess>]
+type TetrominoOrientation =
+    | Up
+    | Right
+    | Down
+    | Left
+
+/// <summary>
+/// Represents the position of a tetromino piece on the game board.
+/// </summary>
+type TetrominoPosition = TetrominoPosition of x: int * y: int
+
+/// <summary>
 /// Represents a tetromino piece that consists of cells.
 /// </summary>
-type TetrominoPiece = private TetrominoPiece of Cell[,]
+type TetrominoPiece =
+    { Type: TetrominoType
+      Orientation: TetrominoOrientation
+      Position: TetrominoPosition }
