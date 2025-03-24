@@ -19,15 +19,14 @@ module GameBoard =
     let minHeight = 10
 
     /// <summary>
-    /// Creates a new game board with the specified width and height with all cells initialized to an initial value.
+    /// Creates a new game board with the specified width and height with all cells initialized to empty state.
     /// Does not validate the width or height.
     /// </summary>
-    /// <param name="initial">The initial value for all cells.</param>
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
-    /// <returns>A new game board with the specified width and height and all cells initialized to the initial value.</returns>
-    let private create initial width height =
-        (Cell.Empty, initial)
+    /// <returns>A new game board with the specified width and height and all cells initialized to empty state.</returns>
+    let private create width height =
+        Cell.Empty
         |> konst
         |> konst
         |> Array2D.init width height
@@ -56,22 +55,22 @@ module GameBoard =
             Ok height
 
     /// <summary>
-    /// Tries to create a game board with the specified width and height with all cells initialized to initial value.
-    /// Validates the width and height and returns an error list
+    /// Tries to create a game board with the specified width and height with all cells initialized to empty state.
+    /// Validates the width and height and returns an error list.
     /// </summary>
-    /// <param name="initial">The initial value for all cells.</param>
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
-    /// <returns>A new game board with the specified width and height and all cells initialized to the initial value or list of errors.</returns>
-    let tryCreate initial width height =
-        create initial <!> validateWidth width <*> validateHeight height
+    /// <returns>
+    /// A new game board with the specified width and height and all cells initialized to empty state if the width and height are valid.
+    /// Otherwise, returns an error list with the validation errors.
+    /// </returns>
+    let tryCreate width height =
+        create <!> validateWidth width <*> validateHeight height
 
     /// <summary>
-    /// Creates a standard 10x20 game board.
+    /// A standard 10x20 game board.
     /// </summary>
-    /// <param name="initial">The initial value for all cells.</param>
-    /// <returns>A standard 10x20 game board with all cells initialized to empty state.</returns>
-    let createStandard initial = create initial 10 20
+    let standard = create 10 20
 
 /// <summary>
 /// Contains tetromino pieces for each type and functions for manipulating them.
