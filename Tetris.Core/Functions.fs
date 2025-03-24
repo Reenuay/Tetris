@@ -104,6 +104,11 @@ module GameBoard =
 [<RequireQualifiedAccess>]
 module TetrominoOrientation =
     /// <summary>
+    /// The total number of tetromino orientations.
+    /// </summary>
+    let totalNumber = 4
+
+    /// <summary>
     /// Rotates a tetromino orientation clockwise.
     /// </summary>
     /// <param name="orientation">The tetromino orientation to rotate.</param>
@@ -132,13 +137,13 @@ module TetrominoPiece =
           TetrominoType.T, Shape.T
           TetrominoType.Z, Shape.Z ]
         |> List.collect (fun (type', initialShape) ->
-            let mutable orient = TetrominoOrientation.Up
+            let mutable orientation = TetrominoOrientation.Up
             let mutable shape = initialShape
 
-            [ for _ in 0..3 ->  // 4 iterations for all orientations
-                  orient <- TetrominoOrientation.rotate orient
+            [ for _ in 1 .. TetrominoOrientation.totalNumber ->
+                  orientation <- TetrominoOrientation.rotate orientation
                   shape <- Shape.rotate shape
-                  (type', orient), shape ])
+                  (type', orientation), shape ])
         |> Map.ofList
 
     /// <summary>
