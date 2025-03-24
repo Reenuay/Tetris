@@ -28,9 +28,7 @@ module GameBoard =
     let private createBoard<'a> (width: int) (height: int) =
         BoardCell<'a>.Empty
         |> konst
-        |> PersistentVector.init width
-        |> konst
-        |> PersistentVector.init height
+        |> PersistentVector.init (width * height)
         |> GameBoard
 
     /// <summary>

@@ -22,7 +22,7 @@ type BoardCell<'cellData> =
 /// Represents a 2D game board that consists of cells.
 /// </summary>
 /// <typeparam name="'cellData">The type of addtitional data that can be stored in each occupied cell of the board.</typeparam>
-type GameBoard<'cellData> = private GameBoard of PersistentVector<PersistentVector<BoardCell<'cellData>>>
+type GameBoard<'cellData> = private GameBoard of PersistentVector<BoardCell<'cellData>>
 
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
