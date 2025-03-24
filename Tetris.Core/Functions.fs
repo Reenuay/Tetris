@@ -106,7 +106,7 @@ module TetrominoOrientation =
     /// <summary>
     /// The total number of tetromino orientations.
     /// </summary>
-    let totalNumber = 4
+    let totalCount = 4
 
     /// <summary>
     /// Rotates a tetromino orientation clockwise.
@@ -140,7 +140,7 @@ module TetrominoPiece =
             let mutable orientation = TetrominoOrientation.Up
             let mutable shape = initialShape
 
-            [ for _ in 1 .. TetrominoOrientation.totalNumber ->
+            [ for _ in 1 .. TetrominoOrientation.totalCount ->
                   orientation <- TetrominoOrientation.rotate orientation
                   shape <- Shape.rotate shape
                   (type', orientation), shape ])
