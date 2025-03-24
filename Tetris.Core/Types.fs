@@ -3,8 +3,6 @@
 open FSharpx.Collections
 
 
-type Board<'a> = PersistentVector<PersistentVector<'a>>
-
 /// <summary>
 /// Represents a point in a 2D space.
 /// </summary>
@@ -24,7 +22,7 @@ type BoardCell<'cellData> =
 /// Represents a 2D game board that consists of cells.
 /// </summary>
 /// <typeparam name="'cellData">The type of addtitional data that can be stored in each occupied cell of the board.</typeparam>
-type GameBoard<'cellData> = private GameBoard of Board<BoardCell<'cellData>>
+type GameBoard<'cellData> = private GameBoard of PersistentVector<PersistentVector<BoardCell<'cellData>>>
 
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
