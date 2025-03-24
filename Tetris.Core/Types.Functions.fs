@@ -1,7 +1,6 @@
 namespace Tetris.Core.Types
 
 open FSharpPlus
-open FSharpx.Collections
 
 
 /// <summary>
@@ -30,7 +29,8 @@ module GameBoard =
     let private create initial width height =
         (Cell.Empty, initial)
         |> konst
-        |> PersistentVector.init (width * height)
+        |> konst
+        |> Array2D.init width height
         |> GameBoard
 
     /// <summary>
@@ -92,84 +92,77 @@ module TetrominoPiece =
     /// Represents I tetromino piece in it's standard orientation.
     /// </summary>
     let I =
-        [
-            o; x; o; o;
-            o; x; o; o;
-            o; x; o; o;
-            o; x; o; o;
+        array2D [
+            [ o; x; o; o ]
+            [ o; x; o; o ]
+            [ o; x; o; o ]
+            [ o; x; o; o ]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
     /// Represents J tetromino piece in it's standard orientation.
     /// </summary>
     let J =
-        [
-            o; x; o;
-            o; x; o;
-            x; x; o;
+        array2D [
+            [o; x; o]
+            [o; x; o]
+            [x; x; o]
         ]
-        |> PersistentVector.ofSeq
-        |> TetrominoPiece
+         |> TetrominoPiece
 
     /// <summary>
     /// Represents L tetromino piece in it's standard orientation.
     /// </summary>
     let L =
-        [
-            o; x; o;
-            o; x; o;
-            o; x; x;
+        array2D [
+            [o; x; o]
+            [o; x; o]
+            [o; x; x]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
     /// Represents O tetromino piece in it's standard orientation.
     /// </summary>
     let O =
-        [
-            x; x;
-            x; x;
+        array2D [
+            [x; x]
+            [x; x]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
     /// Represents S tetromino piece in it's standard orientation.
     /// </summary>
     let S =
-        [
-            o; x; x;
-            x; x; o;
-            o; o; o;
+        array2D [
+            [o; x; x]
+            [x; x; o]
+            [o; o; o]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
     /// Represents T tetromino piece in it's standard orientation.
     /// </summary>
     let T =
-        [
-            o; x; o;
-            x; x; x;
-            o; o; o;
+        array2D [
+            [o; x; o]
+            [x; x; x]
+            [o; o; o]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
     /// Represents Z tetromino piece in it's standard orientation.
     /// </summary>
     let Z =
-        [
-            x; x; o;
-            o; x; x;
-            o; o; o;
+        array2D [
+            [x; x; o]
+            [o; x; x]
+            [o; o; o]
         ]
-        |> PersistentVector.ofSeq
         |> TetrominoPiece
 
     /// <summary>
@@ -178,17 +171,12 @@ module TetrominoPiece =
     /// <param name="piece">The tetromino piece to rotate.</param>
     /// <returns>A new tetromino piece that is rotated clockwise.</returns>
     let rotate (TetrominoPiece cells) =
-        let size = cells.Length |> float |> sqrt |> int
+        let width = Array2D.length2 cells
+        let height = Array2D.length1 cells
+        let rotated = Array2D.create width height Cell.Empty
 
-        let rec loop i j acc =
-            if i >= size then
-                acc
-            elif j >= size then
-                loop (i + 1) 0 acc
-            else
-                let oldIndex = i * size + j
-                let newIndex = j * size + (size - 1 - i)
-                let newAcc = PersistentVector.update newIndex cells.[oldIndex] acc
-                loop i (j + 1) newAcc
+        for i in 0 .. height - 1 do
+            for j in 0 .. width - 1 do
+                rotated[j, width - 1 - i] <- cells[i, j]
 
-        loop 0 0 cells |> TetrominoPiece
+        TetrominoPiece rotated

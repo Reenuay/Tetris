@@ -1,7 +1,5 @@
 ﻿namespace Tetris.Core.Types
 
-open FSharpx.Collections
-
 
 /// <summary>
 /// Represents a single cell in the game board that can be either empty or occupied.
@@ -15,7 +13,7 @@ type Cell =
 /// Represents a 2D game board that consists of cells.
 /// </summary>
 /// <typeparam name="'cellData">The type of addtitional data that can be stored in each cell of the board.</typeparam>
-type GameBoard<'cellData> = private GameBoard of PersistentVector<Cell * 'cellData>
+type GameBoard<'cellData> = private GameBoard of (Cell * 'cellData)[,]
 
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
@@ -40,4 +38,4 @@ type TetrominoType =
 /// <summary>
 /// Represents a tetromino piece that consists of cells.
 /// </summary>
-type TetrominoPiece = private TetrominoPiece of PersistentVector<Cell>
+type TetrominoPiece = private TetrominoPiece of Cell[,]
