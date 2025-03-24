@@ -38,20 +38,6 @@ type TetrominoType =
     | Z
 
 /// <summary>
-/// Represents the rotation of a tetromino.
-/// </summary>
-[<RequireQualifiedAccess>]
-type TetrominoRotation =
-    /// <summary>
-    /// Represents the clockwise rotation of a tetromino.
-    /// </summary>
-    | Clockwise
-    /// <summary>
-    /// Represents the counterclockwise rotation of a tetromino.
-    /// </summary>
-    | CounterClockwise
-
-/// <summary>
 /// Represents a tetromino figure that consists of a list of points.
 /// Each point represents a cell in the tetromino figure and is relative to the tetromino's origin.
 /// </summary>
