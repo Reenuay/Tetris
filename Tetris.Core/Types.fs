@@ -1,5 +1,14 @@
 ﻿namespace Tetris.Core.Types
 
+open FSharpx.Collections
+
+
+type Board<'a> = PersistentVector<PersistentVector<'a>>
+
+/// <summary>
+/// Represents a point in a 2D space.
+/// </summary>
+type Point = (int * int)
 
 /// <summary>
 /// Represents a single cell in the game board that can be either empty or occupied.
@@ -15,7 +24,7 @@ type BoardCell<'cellData> =
 /// Represents a 2D game board that consists of cells.
 /// </summary>
 /// <typeparam name="'cellData">The type of addtitional data that can be stored in each occupied cell of the board.</typeparam>
-type GameBoard<'cellData> = private GameBoard of BoardCell<'cellData> list list
+type GameBoard<'cellData> = private GameBoard of Board<BoardCell<'cellData>>
 
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
@@ -45,19 +54,7 @@ type TetrominoRotation =
     | CounterClockwise
 
 /// <summary>
-/// Represents a single cell in the tetromino that can be either empty or occupied.
+/// Represents a tetromino figure that consists of a list of points.
+/// Each point represents a cell in the tetromino figure and is relative to the tetromino's origin.
 /// </summary>
-type TetrominoCell =
-    /// <summary>
-    /// Represents an occupied cell in the tetromino.
-    /// </summary>
-    | X
-    /// <summary>
-    /// Represents an empty cell in the tetromino.
-    /// </summary>
-    | O
-
-/// <summary>
-/// Represents a tetromino figure that consists of cells.
-/// </summary>
-type TetrominoFigure = private TetrominoFigure of TetrominoCell list list
+type TetrominoFigure = private TetrominoFigure of Point list

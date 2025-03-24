@@ -2,6 +2,7 @@ namespace Tetris.Core.Types
 
 open FSharpPlus
 open FSharpPlus.Data
+open FSharpx.Collections
 
 
 /// <summary>
@@ -25,10 +26,11 @@ module GameBoard =
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
     let private createBoard<'a> (width: int) (height: int) =
-        konst BoardCell<'a>.Empty
-        |> List.init width
+        BoardCell<'a>.Empty
         |> konst
-        |> List.init height
+        |> PersistentVector.init width
+        |> konst
+        |> PersistentVector.init height
         |> GameBoard
 
     /// <summary>
@@ -68,23 +70,3 @@ module GameBoard =
     /// </summary>
     let standard<'a> =
         tryCreate<'a> 10 20 |> Result.defaultWith (fun _ -> failwith "Unreachable")
-
-/// <summary>
-/// Contains functions for working with tetromino types.
-/// </summary>
-[<RequireQualifiedAccess>]
-module TetrominoType =
-    /// <summary>
-    /// Creates a figure from the given tetromino type.
-    /// </summary>
-    /// <param name="type'">The tetromino type.</param>
-    let toFigure type' =
-        match type' with
-        | TetrominoType.I -> [ [ X ]; [ X ]; [ X ]; [ X ] ]
-        | TetrominoType.J -> [ [ O; X ]; [ O; X ]; [ X; X ] ]
-        | TetrominoType.L -> [ [ X; O ]; [ X; O ]; [ X; X ] ]
-        | TetrominoType.O -> [ [ X; X ]; [ X; X ] ]
-        | TetrominoType.S -> [ [ O; X; X ]; [ X; X; O ] ]
-        | TetrominoType.T -> [ [ X; X; X ]; [ O; X; O ] ]
-        | TetrominoType.Z -> [ [ X; X; O ]; [ O; X; X ] ]
-        |> TetrominoFigure
