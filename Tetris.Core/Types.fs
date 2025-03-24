@@ -14,7 +14,7 @@ type Cell =
 /// <summary>
 /// Represents a 2D game board that consists of cells.
 /// </summary>
-/// <typeparam name="'cellData">The type of addtitional data that can be stored in each occupied cell of the board.</typeparam>
+/// <typeparam name="'cellData">The type of addtitional data that can be stored in each cell of the board.</typeparam>
 type GameBoard<'cellData> = private GameBoard of PersistentVector<Cell * 'cellData>
 
 /// <summary>

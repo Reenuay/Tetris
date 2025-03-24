@@ -20,10 +20,13 @@ module GameBoard =
     let minHeight = 10
 
     /// <summary>
-    /// Initializes a new game board with the specified width and height.
+    /// Creates a new game board with the specified width and height with all cells initialized to an initial value.
+    /// Does not validate the width or height.
     /// </summary>
+    /// <param name="initial">The initial value for all cells.</param>
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
+    /// <returns>A new game board with the specified width and height and all cells initialized to the initial value.</returns>
     let private create initial width height =
         (Cell.Empty, initial)
         |> konst
@@ -53,23 +56,25 @@ module GameBoard =
             Ok height
 
     /// <summary>
-    /// Tries to create a game board with the specified width and height.
-    /// Returns a list of errors if the creation fails.
+    /// Tries to create a game board with the specified width and height with all cells initialized to initial value.
+    /// Validates the width and height and returns an error list
     /// </summary>
+    /// <param name="initial">The initial value for all cells.</param>
     /// <param name="width">The width of the game board.</param>
     /// <param name="height">The height of the game board.</param>
-    /// <returns>A game board with the specified width and height and all cells initialized to empty state.</returns>
+    /// <returns>A new game board with the specified width and height and all cells initialized to the initial value or list of errors.</returns>
     let tryCreate initial width height =
         create initial <!> validateWidth width <*> validateHeight height
 
     /// <summary>
     /// Creates a standard 10x20 game board.
     /// </summary>
+    /// <param name="initial">The initial value for all cells.</param>
     /// <returns>A standard 10x20 game board with all cells initialized to empty state.</returns>
     let createStandard initial = create initial 10 20
 
 /// <summary>
-/// Contains tetromino pieces and functions for manipulating them.
+/// Contains tetromino pieces for each type and functions for manipulating them.
 /// </summary>
 [<RequireQualifiedAccess>]
 module TetrominoPiece =
@@ -166,3 +171,24 @@ module TetrominoPiece =
         ]
         |> PersistentVector.ofSeq
         |> TetrominoPiece
+
+    /// <summary>
+    /// Rotates a tetromino piece clockwise.
+    /// </summary>
+    /// <param name="piece">The tetromino piece to rotate.</param>
+    /// <returns>A new tetromino piece that is rotated clockwise.</returns>
+    let rotate (TetrominoPiece cells) =
+        let size = cells.Length |> float |> sqrt |> int
+
+        let rec loop i j acc =
+            if i >= size then
+                acc
+            elif j >= size then
+                loop (i + 1) 0 acc
+            else
+                let oldIndex = i * size + j
+                let newIndex = j * size + (size - 1 - i)
+                let newAcc = PersistentVector.update newIndex cells.[oldIndex] acc
+                loop i (j + 1) newAcc
+
+        loop 0 0 cells |> TetrominoPiece
