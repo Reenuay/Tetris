@@ -9,13 +9,17 @@ type TetrominoType = TetrominoType.TetrominoType
 type TetrominoOrientation = TetrominoOrientation.TetrominoOrientation
 
 /// <summary>
+/// Represents the position of a tetromino piece on the board.
+/// </summary>
+type TetrominoPosition = { X: int; Y: int }
+
+/// <summary>
 /// Represents a tetromino piece on the board.
 /// </summary>
 type TetrominoPiece =
-    private
-        { Type: TetrominoType
-          Orientation: TetrominoOrientation
-          Position: int * int }
+    { Type: TetrominoType
+      Orientation: TetrominoOrientation
+      Position: TetrominoPosition }
 
 /// <summary>
 /// Gets the shape of a tetromino piece by its type and orientation.
@@ -39,18 +43,24 @@ let rotate piece =
 /// </summary>
 let moveLeft piece =
     { piece with
-        Position = fst piece.Position - 1, snd piece.Position }
+        Position =
+            { X = piece.Position.X - 1
+              Y = piece.Position.Y } }
 
 /// <summary>
 /// Moves a tetromino piece to the right by one unit.
 /// </summary>
 let moveRight piece =
     { piece with
-        Position = fst piece.Position + 1, snd piece.Position }
+        Position =
+            { X = piece.Position.X + 1
+              Y = piece.Position.Y } }
 
 /// <summary>
 /// Moves a tetromino piece down by one unit.
 /// </summary>
 let moveDown piece =
     { piece with
-        Position = fst piece.Position, snd piece.Position - 1 }
+        Position =
+            { X = piece.Position.X
+              Y = piece.Position.Y + 1 } }
