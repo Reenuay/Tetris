@@ -7,7 +7,6 @@ module Tetris.Core.TetrominoOrientation
 
 /// <summary>
 /// Represents the orientations of a tetromino piece on the game board.
-/// Default orientation is Up.
 /// </summary>
 type TetrominoOrientation =
     private

@@ -23,18 +23,3 @@ type TetrominoType =
     | S
     | T
     | Z
-
-/// <summary>
-/// Associates each tetromino type with its corresponding shape.
-/// </summary>
-/// <param name="tetrominoType">The tetromino type to convert to a shape.</param>
-/// <returns>The shape corresponding to the given tetromino type.</returns>
-let toShape tetrominoType =
-    match tetrominoType with
-    | I -> Shape.I
-    | J -> Shape.J
-    | L -> Shape.L
-    | O -> Shape.O
-    | S -> Shape.S
-    | T -> Shape.T
-    | Z -> Shape.Z
