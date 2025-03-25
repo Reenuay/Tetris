@@ -21,14 +21,8 @@ type GameBoardCreationError =
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
-/// <summary>
-/// Minimal width of a game board - 8.
-/// </summary>
 let minWidth = 8
 
-/// <summary>
-/// Minimal height of a game board - 10.
-/// </summary>
 let minHeight = 10
 
 /// <summary>

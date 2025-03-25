@@ -13,19 +13,10 @@ type Cell = Cell.Cell
 /// </summary>
 type TetrominoShape = private TetrominoShape of Cell[,]
 
-/// <summary>
-/// Convenient alias for the empty cell.
-/// </summary>
 let private o = Cell.Empty
 
-/// <summary>
-/// Convenient alias for the occupied cell.
-/// </summary>
 let private x = Cell.Occupied
 
-/// <summary>
-/// Represents I tetromino piece.
-/// </summary>
 let private I =
     array2D [
         [ o; x; o; o ]
@@ -35,9 +26,6 @@ let private I =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents J tetromino piece.
-/// </summary>
 let private J =
     array2D [
         [o; x; o]
@@ -46,9 +34,6 @@ let private J =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents L tetromino piece.
-/// </summary>
 let private L =
     array2D [
         [o; x; o]
@@ -57,9 +42,6 @@ let private L =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents O tetromino piece.
-/// </summary>
 let private O =
     array2D [
         [x; x]
@@ -67,9 +49,6 @@ let private O =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents S tetromino piece.
-/// </summary>
 let private S =
     array2D [
         [o; x; x]
@@ -78,9 +57,6 @@ let private S =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents T tetromino piece.
-/// </summary>
 let private T =
     array2D [
         [o; x; o]
@@ -89,9 +65,6 @@ let private T =
     ]
     |> TetrominoShape
 
-/// <summary>
-/// Represents Z tetromino piece.
-/// </summary>
 let private Z =
     array2D [
         [x; x; o]
@@ -117,32 +90,40 @@ let private rotate (TetrominoShape shape) =
     TetrominoShape rotated
 
 /// <summary>
-/// Caches all possible shapes of all tetromino pieces in all orientations.
+/// Rotates a tetromino shape clockwise till it matches the given orientation.
 /// </summary>
-let private shapeCache =
-    [ TetrominoType.I, I
-      TetrominoType.J, J
-      TetrominoType.L, L
-      TetrominoType.O, O
-      TetrominoType.S, S
-      TetrominoType.T, T
-      TetrominoType.Z, Z ]
-    |> List.collect (fun (type', shapeInInitialOrientation) ->
-        let mutable orientation = TetrominoOrientation.initial
-        let mutable shape = shapeInInitialOrientation
+/// <param name="orientation">The orientation to match.</param>
+/// <param name="shape">The tetromino shape to rotate.</param>
+/// <returns>The rotated tetromino shape.</returns>
+let private rotateByOrientation orientation =
+    match orientation with
+    | TetrominoOrientation.Up -> id
+    | TetrominoOrientation.Right -> rotate
+    | TetrominoOrientation.Down -> rotate >> rotate
+    | TetrominoOrientation.Left -> rotate >> rotate >> rotate
 
-        [ for _ in 1 .. TetrominoOrientation.totalCount ->
-              orientation <- TetrominoOrientation.rotate orientation
-              shape <- rotate shape
-              (type', orientation), shape ])
-    |> Map.ofList
+/// Caches all possible shapes of all tetromino pieces in all orientations.
+let private shapeCache =
+    lazy
+        [ TetrominoType.I, I
+          TetrominoType.J, J
+          TetrominoType.L, L
+          TetrominoType.O, O
+          TetrominoType.S, S
+          TetrominoType.T, T
+          TetrominoType.Z, Z ]
+        |> List.collect (fun (type', shapeInInitialOrientation) ->
+            TetrominoOrientation.all
+            |> List.map (fun orientation ->
+                (type', orientation), rotateByOrientation orientation shapeInInitialOrientation))
+        |> Map.ofList
 
 /// <summary>
 /// Gets the shape of a tetromino piece in a given type and orientation.
 /// </summary>
-/// <param name="type'"">The type of the tetromino piece.</param>
+/// <param name="type'">The type of the tetromino piece.</param>
 /// <param name="orientation">The orientation of the tetromino piece.</param>
 /// <returns>The shape of the tetromino piece.</returns>
 let get type' orientation =
     // This will never throw because the cache is initialized with all possible combinations.
-    shapeCache[(type', orientation)]
+    shapeCache.Force()[(type', orientation)]
