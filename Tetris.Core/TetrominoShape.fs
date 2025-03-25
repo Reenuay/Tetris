@@ -112,18 +112,18 @@ let private shapeCache =
           TetrominoType.S, S
           TetrominoType.T, T
           TetrominoType.Z, Z ]
-        |> List.collect (fun (type', shapeInInitialOrientation) ->
+        |> List.collect (fun (tetrominoType, shapeInInitialOrientation) ->
             TetrominoOrientation.all
             |> List.map (fun orientation ->
-                (type', orientation), rotateByOrientation orientation shapeInInitialOrientation))
+                (tetrominoType, orientation), rotateByOrientation orientation shapeInInitialOrientation))
         |> Map.ofList
 
 /// <summary>
 /// Gets the shape of a tetromino piece in a given type and orientation.
 /// </summary>
-/// <param name="type'">The type of the tetromino piece.</param>
+/// <param name="tetrominoType">The type of the tetromino piece.</param>
 /// <param name="orientation">The orientation of the tetromino piece.</param>
 /// <returns>The shape of the tetromino piece.</returns>
-let get type' orientation =
+let get tetrominoType orientation =
     // This will never throw because the cache is initialized with all possible combinations.
-    shapeCache.Force()[(type', orientation)]
+    shapeCache.Force()[(tetrominoType, orientation)]
