@@ -8,7 +8,7 @@
     <Compile Include="Cell.fs" />
     <Compile Include="TetrominoType.fs" />
     <Compile Include="TetrominoOrientation.fs" />
-    <Compile Include="Shape.fs" />
+    <Compile Include="TetrominoShape.fs" />
     <Compile Include="TetrominoPiece.fs" />
     <Compile Include="GameBoard.fs" /><Compile Include="Game.fs" />
   </ItemGroup>

@@ -3,7 +3,7 @@
 /// Contains all the possible shapes of tetromino pieces and functions to manipulate them.
 /// </summary>
 [<RequireQualifiedAccess>]
-module Tetris.Core.Shape
+module Tetris.Core.TetrominoShape
 
 
 type Cell = Cell.Cell
@@ -11,7 +11,7 @@ type Cell = Cell.Cell
 /// <summary>
 /// Represents a shape of a tetromino piece.
 /// </summary>
-type Shape = private Shape of Cell[,]
+type TetrominoShape = private TetrominoShape of Cell[,]
 
 /// <summary>
 /// Convenient alias for the empty cell.
@@ -33,7 +33,7 @@ let private I =
         [ o; x; o; o ]
         [ o; x; o; o ]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents J tetromino piece.
@@ -44,7 +44,7 @@ let private J =
         [o; x; o]
         [x; x; o]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents L tetromino piece.
@@ -55,7 +55,7 @@ let private L =
         [o; x; o]
         [o; x; x]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents O tetromino piece.
@@ -65,7 +65,7 @@ let private O =
         [x; x]
         [x; x]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents S tetromino piece.
@@ -76,7 +76,7 @@ let private S =
         [x; x; o]
         [o; o; o]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents T tetromino piece.
@@ -87,7 +87,7 @@ let private T =
         [x; x; x]
         [o; o; o]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Represents Z tetromino piece.
@@ -98,14 +98,14 @@ let private Z =
         [o; x; x]
         [o; o; o]
     ]
-    |> Shape
+    |> TetrominoShape
 
 /// <summary>
 /// Rotates a tetromino shape clockwise.
 /// </summary>
 /// <param name="shape">The tetromino shape to rotate.</param>
 /// <returns>The rotated tetromino shape.</returns>
-let private rotate (Shape shape) =
+let private rotate (TetrominoShape shape) =
     let width = Array2D.length2 shape
     let height = Array2D.length1 shape
     let rotated = Array2D.create width height Cell.Empty
@@ -114,7 +114,7 @@ let private rotate (Shape shape) =
         for j in 0 .. width - 1 do
             rotated[j, width - 1 - i] <- shape[i, j]
 
-    Shape rotated
+    TetrominoShape rotated
 
 /// <summary>
 /// Caches all possible shapes of all tetromino pieces in all orientations.
