@@ -4,11 +4,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Types.fs" />
-    <Compile Include="Errors.fs" />
-    
+
+    <Compile Include="Cell.fs" />
     <Compile Include="Shape.fs" />
-    <Compile Include="Functions.fs" />
+    <Compile Include="TetrominoType.fs" />
+    <Compile Include="TetrominoOrientation.fs" />
+    <Compile Include="TetrominoPiece.fs" />
+    <Compile Include="GameBoard.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharpPlus" Version="1.7.0" />
