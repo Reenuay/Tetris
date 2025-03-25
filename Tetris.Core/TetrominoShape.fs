@@ -127,3 +127,10 @@ let private shapeCache =
 let get tetrominoType orientation =
     // This will never throw because the cache is initialized with all possible combinations.
     shapeCache.Force()[(tetrominoType, orientation)]
+
+/// <summary>
+/// Gets the cells of a tetromino shape.
+/// </summary>
+/// <param name="shape">The tetromino shape.</param>
+/// <returns>The cells of the tetromino shape.</returns>
+let getCells (TetrominoShape shape) = Array2D.copy shape
