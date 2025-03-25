@@ -10,7 +10,7 @@
     <Compile Include="TetrominoType.fs" />
     <Compile Include="TetrominoOrientation.fs" />
     <Compile Include="TetrominoPiece.fs" />
-    <Compile Include="GameBoard.fs" />
+    <Compile Include="GameBoard.fs" /><Compile Include="Game.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharpPlus" Version="1.7.0" />

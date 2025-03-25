@@ -45,3 +45,33 @@ let private shapeCache =
 /// <returns>A cell array representing the geometrical shape of the tetromino piece.</returns>
 let toShape piece =
     shapeCache[(piece.Type, piece.Orientation)]
+
+/// <summary>
+/// Rotates a tetromino piece by 90 degrees clockwise.
+/// </summary>
+/// <param name="piece">The tetromino piece.</param>
+/// <returns>A new tetromino piece with the same type and position, but rotated by 90 degrees clockwise.</returns>
+let rotate piece =
+    { piece with
+        Orientation = TetrominoOrientation.rotate piece.Orientation }
+
+/// <summary>
+/// Moves a tetromino piece to the left by one unit.
+/// </summary>
+let moveLeft piece =
+    { piece with
+        Position = fst piece.Position - 1, snd piece.Position }
+
+/// <summary>
+/// Moves a tetromino piece to the right by one unit.
+/// </summary>
+let moveRight piece =
+    { piece with
+        Position = fst piece.Position + 1, snd piece.Position }
+
+/// <summary>
+/// Moves a tetromino piece down by one unit.
+/// </summary>
+let moveDown piece =
+    { piece with
+        Position = fst piece.Position, snd piece.Position - 1 }

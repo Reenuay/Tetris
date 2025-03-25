@@ -32,16 +32,6 @@ let minWidth = 8
 let minHeight = 10
 
 /// <summary>
-/// Standard width of a game board - 10.
-/// </summary>
-let standardWidth = 10
-
-/// <summary>
-/// Standard height of a game board - 20.
-/// </summary>
-let standardHeight = 20
-
-/// <summary>
 /// Creates a new game board with the specified width and height with all cells initialized to empty state.
 /// Does not validate the width or height.
 /// </summary>
@@ -85,8 +75,3 @@ let private validateHeight height =
 /// </returns>
 let tryCreate width height =
     create <!> validateWidth width <*> validateHeight height
-
-/// <summary>
-/// A standard 10x20 game board.
-/// </summary>
-let standard = create standardWidth standardHeight
