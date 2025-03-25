@@ -17,11 +17,6 @@ type TetrominoOrientation =
     | Left
 
 /// <summary>
-/// The initial tetromino orientation on the game board - Up.
-/// </summary>
-let initial = Up
-
-/// <summary>
 /// Rotates a tetromino orientation clockwise.
 /// </summary>
 /// <param name="orientation">The tetromino orientation to rotate.</param>
