@@ -4,8 +4,6 @@
 [<RequireQualifiedAccess>]
 module Tetris.Core.TetrominoOrientation
 
-open Microsoft.FSharp.Reflection
-
 
 /// <summary>
 /// Represents the orientations of a tetromino piece on the game board.
@@ -15,6 +13,9 @@ type TetrominoOrientation =
     | Right
     | Down
     | Left
+
+/// All possible tetromino orientations.
+let all = [ Up; Right; Down; Left ]
 
 /// <summary>
 /// Rotates a tetromino orientation clockwise.
@@ -27,9 +28,3 @@ let rotate orientation =
     | Right -> Down
     | Down -> Left
     | Left -> Up
-
-/// All possible tetromino orientations.
-let all =
-    FSharpType.GetUnionCases typeof<TetrominoOrientation>
-    |> Array.map (fun case -> FSharpValue.MakeUnion(case, [||]) :?> TetrominoOrientation)
-    |> Array.toList
