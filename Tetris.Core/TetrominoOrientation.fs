@@ -32,10 +32,11 @@ let all = [ Up; Right; Down; Left ]
 /// <returns>The new orientation of the tetromino piece.</returns>
 let rotate direction orientation =
     let currentIndex = List.findIndex ((=) orientation) all
+    let length = List.length all
 
     let nextIndex =
         match direction with
-        | Clockwise -> (currentIndex + 1) % 4
-        | CounterClockwise -> (currentIndex + 3) % 4
+        | Clockwise -> (currentIndex + 1) % length
+        | CounterClockwise -> (currentIndex + 3) % length
 
     List.item nextIndex all
