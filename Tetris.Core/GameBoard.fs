@@ -8,11 +8,15 @@ open FSharpPlus
 
 
 type Cell = Cell.Cell
+type TetrominoPiece = TetrominoPiece.TetrominoPiece
 
 /// <summary>
 /// Represents a 2D game board that consists of cells.
 /// </summary>
-type GameBoard = private GameBoard of Cell[,]
+type GameBoard =
+    private
+        { Cells: Cell[,]
+          ActivePiece: TetrominoPiece option }
 
 /// <summary>
 /// Represents the possible errors that can occur during the creation of a game board.
@@ -33,7 +37,9 @@ let minHeight = 10
 /// <param name="height">The height of the game board.</param>
 /// <returns>A new game board with the specified width and height and all cells initialized to empty state.</returns>
 let private create width height =
-    Cell.Empty |> konst |> konst |> Array2D.init width height |> GameBoard
+    let cells = Cell.Empty |> konst |> konst |> Array2D.init width height
+
+    { Cells = cells; ActivePiece = None }
 
 /// <summary>
 /// Validates the width of a game board.
@@ -78,7 +84,7 @@ let tryCreate width height =
 /// <param name="board">The game board to check for collision.</param>
 /// <returns>True if the piece can be placed on the game board; otherwise, false.</returns>
 let canPlacePiece piece board =
-    let (GameBoard boardCells) = board
+    let { Cells = boardCells } = board
     let pieceCells = piece |> TetrominoPiece.getShape |> TetrominoShape.getCells
     let position = piece.Position
     let pieceWidth = pieceCells |> Array2D.length1
@@ -94,7 +100,7 @@ let canPlacePiece piece board =
 
     // Check for collision with non-empty cells on the game board
     // This has to be a function because the computation has to be deferred
-    // Firstly because isWithinBounds has to be evaluated first so no index out of bounds exception is thrown
+    // Firstly because isWithinBounds has to be checked first so no index out of bounds exception is thrown
     // Secondly because it avoids unnecessary computation if isWithinBounds is false
     let hasNoCollision _ =
         seq {
