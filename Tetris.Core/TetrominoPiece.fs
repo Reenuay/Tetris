@@ -26,7 +26,7 @@ type TetrominoPiece =
 /// </summary>
 /// <param name="piece">The tetromino piece.</param>
 /// <returns>A cell array representing the geometrical shape of the tetromino piece.</returns>
-let toShape piece =
+let getShape piece =
     TetrominoShape.get piece.Type piece.Orientation
 
 /// <summary>

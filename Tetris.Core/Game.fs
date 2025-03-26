@@ -13,7 +13,6 @@ type TetrominoType = TetrominoType.TetrominoType
 /// Represents the state of a the Game.
 /// </summary>
 type Game =
-    private
-        { Board: GameBoard
-          CurrentPiece: TetrominoPiece
-          NextType: TetrominoType }
+    { Board: GameBoard
+      ActivePiece: TetrominoPiece
+      NextType: TetrominoType }
