@@ -28,39 +28,3 @@ type TetrominoPiece =
 /// <returns>A cell array representing the geometrical shape of the tetromino piece.</returns>
 let getShape piece =
     TetrominoShape.get piece.Type piece.Orientation
-
-/// <summary>
-/// Rotates a tetromino piece by 90 degrees clockwise.
-/// </summary>
-/// <param name="piece">The tetromino piece.</param>
-/// <returns>A new tetromino piece with the same type and position, but rotated by 90 degrees clockwise.</returns>
-let rotate piece =
-    { piece with
-        Orientation = TetrominoOrientation.rotate piece.Orientation }
-
-/// <summary>
-/// Moves a tetromino piece to the left by one unit.
-/// </summary>
-let moveLeft piece =
-    { piece with
-        Position =
-            { X = piece.Position.X - 1
-              Y = piece.Position.Y } }
-
-/// <summary>
-/// Moves a tetromino piece to the right by one unit.
-/// </summary>
-let moveRight piece =
-    { piece with
-        Position =
-            { X = piece.Position.X + 1
-              Y = piece.Position.Y } }
-
-/// <summary>
-/// Moves a tetromino piece down by one unit.
-/// </summary>
-let moveDown piece =
-    { piece with
-        Position =
-            { X = piece.Position.X
-              Y = piece.Position.Y + 1 } }
