@@ -77,13 +77,14 @@ let tryCreate width height =
 /// <param name="piece">The piece to check for collision.</param>
 /// <param name="board">The game board to check for collision.</param>
 /// <returns>True if the piece can be placed on the game board; otherwise, false.</returns>
-let canPlace piece (GameBoard board) =
+let canPlacePiece piece board =
+    let (GameBoard boardCells) = board
     let pieceCells = piece |> TetrominoPiece.getShape |> TetrominoShape.getCells
     let position = piece.Position
     let pieceWidth = pieceCells |> Array2D.length1
     let pieceHeight = pieceCells |> Array2D.length2
-    let boardWidth = board |> Array2D.length1
-    let boardHeight = board |> Array2D.length2
+    let boardWidth = boardCells |> Array2D.length1
+    let boardHeight = boardCells |> Array2D.length2
 
     let isWithinBounds =
         position.X >= 0
@@ -94,14 +95,14 @@ let canPlace piece (GameBoard board) =
     // Check for collision with non-empty cells on the game board
     // This has to be a function because the computation has to be deferred
     // Firstly because isWithinBounds has to be evaluated first so no index out of bounds exception is thrown
-    // Secondly because it avoids unnecessary computation if isWithinBounds is true
+    // Secondly because it avoids unnecessary computation if isWithinBounds is false
     let hasNoCollision _ =
         seq {
             for i in 0 .. pieceWidth - 1 do
                 for j in 0 .. pieceHeight - 1 do
                     yield
                         pieceCells[i, j] = Cell.Empty
-                        || board[position.X + i, position.Y + j] = Cell.Empty
+                        || boardCells[position.X + i, position.Y + j] = Cell.Empty
         }
         |> Seq.forall id
 

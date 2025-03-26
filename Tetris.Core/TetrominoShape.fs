@@ -78,14 +78,15 @@ let private Z =
 /// </summary>
 /// <param name="shape">The tetromino shape to rotate.</param>
 /// <returns>The rotated tetromino shape.</returns>
-let private rotate (TetrominoShape shape) =
-    let width = Array2D.length2 shape
-    let height = Array2D.length1 shape
+let private rotate shape =
+    let (TetrominoShape cells) = shape
+    let width = Array2D.length2 cells
+    let height = Array2D.length1 cells
     let rotated = Array2D.create width height Cell.Empty
 
     for i in 0 .. height - 1 do
         for j in 0 .. width - 1 do
-            rotated[j, width - 1 - i] <- shape[i, j]
+            rotated[j, width - 1 - i] <- cells[i, j]
 
     TetrominoShape rotated
 
@@ -133,4 +134,6 @@ let get tetrominoType orientation =
 /// </summary>
 /// <param name="shape">The tetromino shape.</param>
 /// <returns>The cells of the tetromino shape.</returns>
-let getCells (TetrominoShape shape) = Array2D.copy shape
+let getCells shape =
+    let (TetrominoShape cells) = shape
+    Array2D.copy cells
