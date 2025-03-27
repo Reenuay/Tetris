@@ -64,3 +64,16 @@ module Position =
     /// <param name="y">The y-coordinate.</param>
     /// <returns>The new position.</returns>
     let create x y = { X = x; Y = y }
+
+    /// <summary>
+    /// Moves the position in the given direction.
+    /// </summary>
+    /// <param name="direction">The direction of movement.</param>
+    /// <param name="position">The current position.</param>
+    /// <returns>The new position after movement.</returns>
+    let move direction position =
+        match direction with
+        | Direction.Up -> { position with Y = position.Y - 1 }
+        | Direction.Right -> { position with X = position.X + 1 }
+        | Direction.Down -> { position with Y = position.Y + 1 }
+        | Direction.Left -> { position with X = position.X - 1 }

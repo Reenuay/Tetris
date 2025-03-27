@@ -5,6 +5,9 @@ open FSharpPlus
 
 
 type Cell = Place.Place
+type Direction = Direction.Direction
+type Rotation = Rotation.Rotation
+type Position = Position.Position
 type TetrominoPiece = TetrominoPiece.TetrominoPiece
 
 /// <summary>
@@ -21,6 +24,22 @@ type GameBoard =
 type GameBoardCreationError =
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
+
+/// <summary>
+/// Represents the possible actions that can be performed on a tetromino piece on the board.
+/// </summary>
+type BoardAction =
+    | Move of Direction
+    | Rotate of Rotation
+    | Drop
+
+/// <summary>
+/// Represents the result of applying a board action to a game board.
+/// </summary>
+type BoardActionResult =
+    | Update of GameBoard
+    | Collision of GameBoard
+    | NoActivePiece
 
 let minWidth = 8
 
@@ -74,26 +93,26 @@ let tryCreate width height =
     create <!> validateWidth width <*> validateHeight height
 
 /// <summary>
-/// Checks if the piece can be placed on the game board.
-/// False if the piece is out of bounds or intersects with any non-empty cells on the game board.
+/// Checks if the shape can be placed at the given position on the game board.
 /// </summary>
-/// <param name="piece">The piece to check for collision.</param>
-/// <param name="board">The game board to check for collision.</param>
-/// <returns>True if the piece can be placed on the game board; otherwise, false.</returns>
-let canPlacePiece piece board =
+/// <param name="shape">The shape of the tetromino piece.</param>
+/// <param name="position">The position on the game board where the shape should be placed.</param>
+/// <param name="board">The game board.</param>
+/// <returns>True if the shape can be placed at the given position on the game board; otherwise, false.</returns>
+let private canPlaceShape shape position board =
     let { Cells = boardCells } = board
-    let pieceCells = piece |> TetrominoPiece.getShape |> TetrominoShape.getCells
-    let position = piece.PositionOnBoard
-    let pieceWidth = pieceCells |> Array2D.length1
-    let pieceHeight = pieceCells |> Array2D.length2
+    let { Position.X = x; Position.Y = y } = position
+    let cells = shape |> TetrominoShape.getCells
+    let pieceWidth = cells |> Array2D.length1
+    let pieceHeight = cells |> Array2D.length2
     let boardWidth = boardCells |> Array2D.length1
     let boardHeight = boardCells |> Array2D.length2
 
     let isWithinBounds =
-        position.X >= 0
-        && position.X + pieceWidth <= boardWidth
-        && position.Y >= 0
-        && position.Y + pieceHeight <= boardHeight
+        x >= 0
+        && x + pieceWidth <= boardWidth
+        && y >= 0
+        && y + pieceHeight <= boardHeight
 
     // Check for collision with non-empty cells on the game board
     // This has to be a function because the computation has to be deferred
@@ -103,10 +122,61 @@ let canPlacePiece piece board =
         seq {
             for i in 0 .. pieceWidth - 1 do
                 for j in 0 .. pieceHeight - 1 do
-                    yield
-                        pieceCells[i, j] = Place.Empty
-                        || boardCells[position.X + i, position.Y + j] = Place.Empty
+                    yield cells[i, j] = Place.Empty || boardCells[x + i, y + j] = Place.Empty
         }
         |> Seq.forall id
 
     isWithinBounds && hasNoCollision ()
+
+/// <summary>
+/// Applies a board action to the game board i.e. moves, rotates or drops the active piece.
+/// </summary>
+/// <param name="action">The board action to apply.</param>
+/// <param name="board">The game board.</param>
+/// <returns>The result of applying the board action to the game board.</returns>
+let applyAction action board =
+    match board.ActivePiece, action with
+    | Some piece, Move direction ->
+        let updatedPiece =
+            { piece with
+                Position = Position.move direction piece.Position }
+
+        let shape = TetrominoPiece.getShape updatedPiece
+
+        if canPlaceShape shape updatedPiece.Position board then
+            Update
+                { board with
+                    ActivePiece = Some updatedPiece }
+        else
+            Collision board
+
+    | Some piece, Rotate rotation ->
+        let updatedPiece =
+            { piece with
+                Orientation = Direction.rotate rotation piece.Orientation }
+
+        let shape = TetrominoPiece.getShape updatedPiece
+
+        if canPlaceShape shape updatedPiece.Position board then
+            Update
+                { board with
+                    ActivePiece = Some updatedPiece }
+        else
+            Collision board
+
+    | Some piece, Drop ->
+        let shape = TetrominoPiece.getShape piece
+        let mutable lastValidPosition = piece.Position
+
+        while canPlaceShape shape lastValidPosition board do
+            lastValidPosition <- Position.move Direction.Down lastValidPosition
+
+        let updatedPiece =
+            { piece with
+                Position = lastValidPosition }
+
+        Collision
+            { board with
+                ActivePiece = Some updatedPiece }
+
+    | None, _ -> NoActivePiece
