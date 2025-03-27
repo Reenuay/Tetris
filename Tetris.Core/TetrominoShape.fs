@@ -3,16 +3,16 @@
 module Tetris.Core.TetrominoShape
 
 
-type Cell = Cell.Cell
+type Cell = Place.Place
 
 /// <summary>
 /// Represents a shape of a tetromino piece.
 /// </summary>
 type TetrominoShape = private TetrominoShape of Cell[,]
 
-let private o = Cell.Empty
+let private o = Place.Empty
 
-let private x = Cell.Occupied
+let private x = Place.Occupied
 
 let private I =
     array2D [
@@ -79,7 +79,7 @@ let private rotate shape =
     let (TetrominoShape cells) = shape
     let width = Array2D.length2 cells
     let height = Array2D.length1 cells
-    let rotated = Array2D.create width height Cell.Empty
+    let rotated = Array2D.create width height Place.Empty
 
     for i in 0 .. height - 1 do
         for j in 0 .. width - 1 do

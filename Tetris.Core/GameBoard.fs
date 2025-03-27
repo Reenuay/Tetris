@@ -4,7 +4,7 @@ module Tetris.Core.GameBoard
 open FSharpPlus
 
 
-type Cell = Cell.Cell
+type Cell = Place.Place
 type TetrominoPiece = TetrominoPiece.TetrominoPiece
 
 /// <summary>
@@ -34,7 +34,7 @@ let minHeight = 10
 /// <param name="height">The height of the game board.</param>
 /// <returns>A new game board with the specified width and height and all cells initialized to empty state.</returns>
 let private create width height =
-    let cells = Cell.Empty |> konst |> konst |> Array2D.init width height
+    let cells = Place.Empty |> konst |> konst |> Array2D.init width height
 
     { Cells = cells; ActivePiece = None }
 
@@ -104,8 +104,8 @@ let canPlacePiece piece board =
             for i in 0 .. pieceWidth - 1 do
                 for j in 0 .. pieceHeight - 1 do
                     yield
-                        pieceCells[i, j] = Cell.Empty
-                        || boardCells[position.X + i, position.Y + j] = Cell.Empty
+                        pieceCells[i, j] = Place.Empty
+                        || boardCells[position.X + i, position.Y + j] = Place.Empty
         }
         |> Seq.forall id
 

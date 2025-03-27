@@ -2,11 +2,11 @@ namespace Tetris.Core
 
 
 [<RequireQualifiedAccess>]
-module Cell =
+module Place =
     /// <summary>
-    /// Represents a single cell in the game board that can be either empty or occupied.
+    /// Represents an abstract place that can be either empty or occupied.
     /// </summary>
-    type Cell =
+    type Place =
         | Empty
         | Occupied
 
@@ -37,10 +37,10 @@ module Direction =
     /// Rotates direction by the given rotation.
     /// </summary>
     /// <param name="rotation">The direction of rotation.</param>
-    /// <param name="orientation">The current direction.</param>
+    /// <param name="direction">The current direction.</param>
     /// <returns>The new direction after rotation.</returns>
-    let rotate rotation orientation =
-        let currentIndex = List.findIndex ((=) orientation) all
+    let rotate rotation direction =
+        let currentIndex = List.findIndex ((=) direction) all
         let length = List.length all
 
         let nextIndex =
