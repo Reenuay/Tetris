@@ -25,22 +25,6 @@ type GameBoardCreationError =
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
-/// <summary>
-/// Represents the possible actions that can be performed on a tetromino piece on the board.
-/// </summary>
-type BoardAction =
-    | Move of Direction
-    | Rotate of Rotation
-    | Drop
-
-/// <summary>
-/// Represents the result of applying a board action to a game board.
-/// </summary>
-type BoardActionResult =
-    | Update of GameBoard
-    | Collision of GameBoard
-    | NoActivePiece
-
 let minWidth = 8
 
 let minHeight = 10
@@ -127,56 +111,3 @@ let private canPlaceShape shape position board =
         |> Seq.forall id
 
     isWithinBounds && hasNoCollision ()
-
-/// <summary>
-/// Applies a board action to the game board i.e. moves, rotates or drops the active piece.
-/// </summary>
-/// <param name="action">The board action to apply.</param>
-/// <param name="board">The game board.</param>
-/// <returns>The result of applying the board action to the game board.</returns>
-let applyAction action board =
-    match board.ActivePiece, action with
-    | Some piece, Move direction ->
-        let updatedPiece =
-            { piece with
-                Position = Position.move direction piece.Position }
-
-        let shape = TetrominoPiece.getShape updatedPiece
-
-        if canPlaceShape shape updatedPiece.Position board then
-            Update
-                { board with
-                    ActivePiece = Some updatedPiece }
-        else
-            Collision board
-
-    | Some piece, Rotate rotation ->
-        let updatedPiece =
-            { piece with
-                Orientation = Direction.rotate rotation piece.Orientation }
-
-        let shape = TetrominoPiece.getShape updatedPiece
-
-        if canPlaceShape shape updatedPiece.Position board then
-            Update
-                { board with
-                    ActivePiece = Some updatedPiece }
-        else
-            Collision board
-
-    | Some piece, Drop ->
-        let shape = TetrominoPiece.getShape piece
-        let mutable lastValidPosition = piece.Position
-
-        while canPlaceShape shape lastValidPosition board do
-            lastValidPosition <- Position.move Direction.Down lastValidPosition
-
-        let updatedPiece =
-            { piece with
-                Position = lastValidPosition }
-
-        Collision
-            { board with
-                ActivePiece = Some updatedPiece }
-
-    | None, _ -> NoActivePiece
