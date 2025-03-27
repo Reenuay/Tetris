@@ -14,13 +14,6 @@ type TetrominoOrientation =
     | Down
     | Left
 
-/// <summary>
-/// Represents the rotation direction of a tetromino piece.
-/// </summary>
-type TetrominoRotation =
-    | Clockwise
-    | CounterClockwise
-
 /// All possible tetromino orientations in the clockwise order.
 let all = [ Up; Right; Down; Left ]
 
@@ -36,7 +29,7 @@ let rotate direction orientation =
 
     let nextIndex =
         match direction with
-        | Clockwise -> (currentIndex + 1) % length
-        | CounterClockwise -> (currentIndex + 3) % length
+        | TetrominoRotation.Clockwise -> (currentIndex + 1) % length
+        | TetrominoRotation.CounterClockwise -> (currentIndex + 3) % length
 
     List.item nextIndex all
