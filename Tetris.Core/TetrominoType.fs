@@ -1,6 +1,3 @@
-/// <summary>
-/// Contains the TetrominoType type and its associated functions.
-/// </summary>
 [<RequireQualifiedAccess>]
 module Tetris.Core.TetrominoType
 

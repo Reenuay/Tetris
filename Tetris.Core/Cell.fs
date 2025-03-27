@@ -1,6 +1,3 @@
-/// <summary>
-/// Contains the definition of the Cell type and related functions.
-/// </summary>
 [<RequireQualifiedAccess>]
 module Tetris.Core.Cell
 

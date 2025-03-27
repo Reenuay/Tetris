@@ -1,6 +1,3 @@
-/// <summary>
-/// Contains the definition of the TetrominoPiece type and related functions.
-/// </summary>
 [<RequireQualifiedAccess>]
 module Tetris.Core.TetrominoPiece
 

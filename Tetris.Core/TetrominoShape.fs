@@ -1,7 +1,4 @@
 // This file is added to .fantomasignore to prevent it from being formatted by Fantomas so shape definitions stay pretty.
-/// <summary>
-/// Contains all the possible shapes of tetromino pieces and functions to manipulate them.
-/// </summary>
 [<RequireQualifiedAccess>]
 module Tetris.Core.TetrominoShape
 

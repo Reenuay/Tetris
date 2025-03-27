@@ -1,6 +1,3 @@
-/// <summary>
-/// Contains the definition of the GameBoard type and related functions.
-/// </summary>
 [<RequireQualifiedAccess>]
 module Tetris.Core.GameBoard
 
