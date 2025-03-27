@@ -83,7 +83,7 @@ let tryCreate width height =
 let canPlacePiece piece board =
     let { Cells = boardCells } = board
     let pieceCells = piece |> TetrominoPiece.getShape |> TetrominoShape.getCells
-    let position = piece.Position
+    let position = piece.PositionOnBoard
     let pieceWidth = pieceCells |> Array2D.length1
     let pieceHeight = pieceCells |> Array2D.length2
     let boardWidth = boardCells |> Array2D.length1
