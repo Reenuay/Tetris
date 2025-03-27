@@ -6,6 +6,7 @@ module Place =
     /// <summary>
     /// Represents an abstract place that can be either empty or occupied.
     /// </summary>
+    [<Struct>]
     type Place =
         | Empty
         | Occupied
@@ -15,6 +16,7 @@ module Rotation =
     /// <summary>
     /// Represents the rotation direction.
     /// </summary>
+    [<Struct>]
     type Rotation =
         | Clockwise
         | CounterClockwise
@@ -24,6 +26,7 @@ module Direction =
     /// <summary>
     /// Represents the direction of orientation or movement.
     /// </summary>
+    [<Struct>]
     type Direction =
         | Up
         | Right
@@ -55,6 +58,7 @@ module Position =
     /// <summary>
     /// Represents the position of a tetromino piece on the board.
     /// </summary>
+    [<Struct>]
     type Position = { X: int; Y: int }
 
     /// <summary>
