@@ -95,10 +95,10 @@ let private rotate shape =
 /// <returns>The rotated tetromino shape.</returns>
 let private rotateByOrientation orientation =
     match orientation with
-    | TetrominoOrientation.Up -> id
-    | TetrominoOrientation.Right -> rotate
-    | TetrominoOrientation.Down -> rotate >> rotate
-    | TetrominoOrientation.Left -> rotate >> rotate >> rotate
+    | Direction.Up -> id
+    | Direction.Right -> rotate
+    | Direction.Down -> rotate >> rotate
+    | Direction.Left -> rotate >> rotate >> rotate
 
 /// Caches all possible shapes of all tetromino pieces in all orientations.
 let private shapeCache =
@@ -111,7 +111,7 @@ let private shapeCache =
           TetrominoType.T, T
           TetrominoType.Z, Z ]
         |> List.collect (fun (tetrominoType, shapeInInitialOrientation) ->
-            TetrominoOrientation.all
+            Direction.all
             |> List.map (fun orientation ->
                 (tetrominoType, orientation), rotateByOrientation orientation shapeInInitialOrientation))
         |> Map.ofList

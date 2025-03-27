@@ -6,8 +6,8 @@
   <ItemGroup>
     <Compile Include="Cell.fs" />
     <Compile Include="TetrominoType.fs" />
-    <Compile Include="TetrominoRotation.fs" />
-    <Compile Include="TetrominoOrientation.fs" />
+    <Compile Include="Rotation.fs" />
+    <Compile Include="Direction.fs" />
     <Compile Include="TetrominoShape.fs" />
     <Compile Include="TetrominoPiece.fs" />
     <Compile Include="GameBoard.fs" />

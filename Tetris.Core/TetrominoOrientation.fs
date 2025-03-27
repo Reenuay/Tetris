@@ -26,7 +26,7 @@ let rotate direction orientation =
 
     let nextIndex =
         match direction with
-        | TetrominoRotation.Clockwise -> (currentIndex + 1) % length
-        | TetrominoRotation.CounterClockwise -> (currentIndex + 3) % length
+        | Rotation.Clockwise -> (currentIndex + 1) % length
+        | Rotation.CounterClockwise -> (currentIndex + 3) % length
 
     List.item nextIndex all

@@ -3,7 +3,7 @@ module Tetris.Core.TetrominoPiece
 
 
 type TetrominoType = TetrominoType.TetrominoType
-type TetrominoOrientation = TetrominoOrientation.TetrominoOrientation
+type Direction = Direction.Direction
 
 /// <summary>
 /// Represents the position of a tetromino piece on the board.
@@ -15,7 +15,7 @@ type TetrominoPosition = { X: int; Y: int }
 /// </summary>
 type TetrominoPiece =
     { Type: TetrominoType
-      Orientation: TetrominoOrientation
+      Orientation: Direction
       Position: TetrominoPosition }
 
 /// <summary>
