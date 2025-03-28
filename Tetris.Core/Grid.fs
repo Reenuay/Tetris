@@ -70,11 +70,20 @@ let canPlace block position grid =
     // Firstly because isWithinBounds has to be checked first so no index out of bounds exception is thrown
     // Secondly because it avoids unnecessary computation if isWithinBounds is false
     let hasNoCollision _ =
-        seq {
-            for i in 0 .. blockWidth - 1 do
-                for j in 0 .. blockHeight - 1 do
-                    yield block[i, j] = Tile.Empty || grid.Tiles[x + i, y + j] = Tile.Empty
-        }
-        |> Seq.forall id
+        let mutable hasCollision = false
+        let mutable i = 0
+
+        while not hasCollision && i < blockWidth do
+            let mutable j = 0
+
+            while not hasCollision && j < blockHeight do
+                if block[i, j] <> Tile.Empty && grid.Tiles[x + i, y + j] <> Tile.Empty then
+                    hasCollision <- true
+
+                j <- j + 1
+
+            i <- i + 1
+
+        not hasCollision
 
     isWithinBounds && hasNoCollision ()
