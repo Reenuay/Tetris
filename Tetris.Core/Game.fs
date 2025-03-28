@@ -6,11 +6,9 @@ module Tetris.Core.Game
 
 
 type GameBoard = GameBoard.GameBoard
-type TetrominoType = TetrominoType.TetrominoType
+type Tetromino = Tetromino.Tetromino
 
 /// <summary>
-/// Represents the state of a the Game.
+/// Represents the state of the game.
 /// </summary>
-type Game =
-    { Board: GameBoard
-      NextType: TetrominoType }
+type Game = { Board: GameBoard; Next: Tetromino }

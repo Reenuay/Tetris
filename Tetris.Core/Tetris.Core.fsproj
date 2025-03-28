@@ -4,10 +4,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SimpleTypes.fs" /><Compile Include="Shape.fs" />
-    <Compile Include="TetrominoType.fs" />
-    <Compile Include="TetrominoShape.fs" />
-    <Compile Include="TetrominoPiece.fs" />
+    <Compile Include="SimpleTypes.fs" /><Compile Include="Block.fs" />
+    
+    <Compile Include="Tetromino.fs" />
+    
 
     <Compile Include="GameBoard.fs" />
     <Compile Include="Game.fs" />

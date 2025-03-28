@@ -2,12 +2,12 @@ namespace Tetris.Core
 
 
 [<RequireQualifiedAccess>]
-module Place =
+module Tile =
     /// <summary>
-    /// Represents an abstract place that can be either empty or occupied.
+    /// Represents a tile that can be either empty or occupied.
     /// </summary>
     [<Struct>]
-    type Place =
+    type Tile =
         | Empty
         | Occupied
 

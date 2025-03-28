@@ -4,13 +4,7 @@ module Tetris.Core.GameBoard
 open FSharpPlus
 
 
-module Tile = Place
-
-type Tile = Place.Place
-type Direction = Direction.Direction
-type Rotation = Rotation.Rotation
-type Position = Position.Position
-type TetrominoPiece = TetrominoPiece.TetrominoPiece
+type Tile = Tile.Tile
 
 /// <summary>
 /// Represents a 2D game board that consists of tiles.
@@ -78,22 +72,22 @@ let tryCreate width height =
 /// <summary>
 /// Checks if the shape can be placed at the given position on the game board.
 /// </summary>
-/// <param name="shape">The shape of the tetromino piece.</param>
-/// <param name="position">The position on the game board where the shape should be placed.</param>
+/// <param name="block">The block of the tetromino piece.</param>
+/// <param name="position">The position on the game board where the block should be placed.</param>
 /// <param name="board">The game board.</param>
-/// <returns>True if the shape can be placed at the given position on the game board; otherwise, false.</returns>
-let private canPlaceShape shape position board =
+/// <returns>True if the block can be placed at the given position on the game board; otherwise, false.</returns>
+let canPlace block position board =
     let { Position.X = x; Position.Y = y } = position
-    let shapeWidth = shape |> Shape.width
-    let shapeHeight = shape |> Shape.height
+    let blockWidth = block |> Block.width
+    let blockHeight = block |> Block.height
     let boardWidth = board.Tiles |> Array2D.length1
     let boardHeight = board.Tiles |> Array2D.length2
 
     let isWithinBounds =
         x >= 0
-        && x + shapeWidth <= boardWidth
+        && x + blockWidth <= boardWidth
         && y >= 0
-        && y + shapeHeight <= boardHeight
+        && y + blockHeight <= boardHeight
 
     // Check for collision with non-empty tiles on the game board
     // This has to be a function because the computation has to be deferred
@@ -101,9 +95,9 @@ let private canPlaceShape shape position board =
     // Secondly because it avoids unnecessary computation if isWithinBounds is false
     let hasNoCollision _ =
         seq {
-            for i in 0 .. shapeWidth - 1 do
-                for j in 0 .. shapeHeight - 1 do
-                    yield shape[i, j] = Tile.Empty || board.Tiles[x + i, y + j] = Tile.Empty
+            for i in 0 .. blockWidth - 1 do
+                for j in 0 .. blockHeight - 1 do
+                    yield block[i, j] = Tile.Empty || board.Tiles[x + i, y + j] = Tile.Empty
         }
         |> Seq.forall id
 
