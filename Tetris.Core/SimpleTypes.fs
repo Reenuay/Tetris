@@ -56,7 +56,7 @@ module Direction =
 [<RequireQualifiedAccess>]
 module Position =
     /// <summary>
-    /// Represents the position of a tetromino piece on the board.
+    /// Represents the position in a two-dimensional space.
     /// </summary>
     [<Struct>]
     type Position = { X: int; Y: int }
