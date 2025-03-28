@@ -27,6 +27,12 @@ type Direction =
     | Down
     | Left
 
+/// <summary>
+/// Represents the position in a two-dimensional space.
+/// </summary>
+[<Struct>]
+type Position = { x: int; y: int }
+
 [<RequireQualifiedAccess>]
 module Direction =
     /// All possible directions of rotation in a clockwise order.
@@ -48,9 +54,3 @@ module Direction =
             | Rotation.CounterClockwise -> (currentIndex + 3) % length
 
         List.item nextIndex all
-
-/// <summary>
-/// Represents the position in a two-dimensional space.
-/// </summary>
-[<Struct>]
-type Position = { x: int; y: int }
