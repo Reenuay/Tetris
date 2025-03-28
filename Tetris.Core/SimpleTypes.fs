@@ -1,40 +1,36 @@
 namespace Tetris.Core
 
 
+/// <summary>
+/// Represents a tile that can be either empty or occupied.
+/// </summary>
+[<Struct>]
 [<RequireQualifiedAccess>]
-module Tile =
-    /// <summary>
-    /// Represents a tile that can be either empty or occupied.
-    /// </summary>
-    [<Struct>]
-    type Tile =
-        | Empty
-        | Occupied
+type Tile =
+    | Empty
+    | Occupied
 
+[<Struct>]
 [<RequireQualifiedAccess>]
-module Rotation =
-    /// <summary>
-    /// Represents the rotation direction.
-    /// </summary>
-    [<Struct>]
-    type Rotation =
-        | Clockwise
-        | CounterClockwise
+type Rotation =
+    | Clockwise
+    | CounterClockwise
+
+/// <summary>
+/// Represents the direction of orientation or movement.
+/// </summary>
+[<Struct>]
+[<RequireQualifiedAccess>]
+type Direction =
+    | Up
+    | Right
+    | Down
+    | Left
 
 [<RequireQualifiedAccess>]
 module Direction =
-    /// <summary>
-    /// Represents the direction of orientation or movement.
-    /// </summary>
-    [<Struct>]
-    type Direction =
-        | Up
-        | Right
-        | Down
-        | Left
-
     /// All possible directions of rotation in a clockwise order.
-    let all = [ Up; Right; Down; Left ]
+    let all = [ Direction.Up; Direction.Right; Direction.Down; Direction.Left ]
 
     /// <summary>
     /// Rotates direction by the given rotation.
@@ -53,31 +49,8 @@ module Direction =
 
         List.item nextIndex all
 
-[<RequireQualifiedAccess>]
-module Position =
-    /// <summary>
-    /// Represents the position in a two-dimensional space.
-    /// </summary>
-    [<Struct>]
-    type Position = { X: int; Y: int }
-
-    /// <summary>
-    /// Creates a new position with the given coordinates.
-    /// </summary>
-    /// <param name="x">The x-coordinate.</param>
-    /// <param name="y">The y-coordinate.</param>
-    /// <returns>The new position.</returns>
-    let create x y = { X = x; Y = y }
-
-    /// <summary>
-    /// Moves the position in the given direction.
-    /// </summary>
-    /// <param name="direction">The direction of movement.</param>
-    /// <param name="position">The current position.</param>
-    /// <returns>The new position after movement.</returns>
-    let move direction position =
-        match direction with
-        | Direction.Up -> { position with Y = position.Y - 1 }
-        | Direction.Right -> { position with X = position.X + 1 }
-        | Direction.Down -> { position with Y = position.Y + 1 }
-        | Direction.Left -> { position with X = position.X - 1 }
+/// <summary>
+/// Represents the position in a two-dimensional space.
+/// </summary>
+[<Struct>]
+type Position = { x: int; y: int }

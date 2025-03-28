@@ -2,8 +2,6 @@
 module Tetris.Core.Block
 
 
-type Tile = Tile.Tile
-
 /// <summary>
 /// Represents a block of tiles.
 /// </summary>

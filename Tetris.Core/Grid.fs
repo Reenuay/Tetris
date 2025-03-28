@@ -4,8 +4,6 @@ module Tetris.Core.Grid
 open FSharpPlus
 
 
-type Tile = Tile.Tile
-
 /// <summary>
 /// Represents a 2D grid of tiles.
 /// </summary>
@@ -56,14 +54,16 @@ let tryCreate width height =
 /// <param name="grid">The grid to check.</param>
 /// <returns>True if the block can be placed at the given position on the given grid, false otherwise.</returns>
 let canPlace block position grid =
-    let { Position.X = x; Position.Y = y } = position
     let blockWidth = block |> Block.width
     let blockHeight = block |> Block.height
     let gridWidth = grid.Tiles |> Array2D.length1
     let gridHeight = grid.Tiles |> Array2D.length2
 
     let isWithinBounds =
-        x >= 0 && x + blockWidth <= gridWidth && y >= 0 && y + blockHeight <= gridHeight
+        position.x >= 0
+        && position.x + blockWidth <= gridWidth
+        && position.y >= 0
+        && position.y + blockHeight <= gridHeight
 
     // Check for collision with non-empty tiles on the grid
     // This has to be a function because the computation has to be deferred
@@ -77,7 +77,10 @@ let canPlace block position grid =
             let mutable j = 0
 
             while not hasCollision && j < blockHeight do
-                if block[i, j] <> Tile.Empty && grid.Tiles[x + i, y + j] <> Tile.Empty then
+                if
+                    block[i, j] <> Tile.Empty
+                    && grid.Tiles[position.x + i, position.y + j] <> Tile.Empty
+                then
                     hasCollision <- true
 
                 j <- j + 1
