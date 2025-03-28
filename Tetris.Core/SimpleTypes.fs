@@ -35,7 +35,7 @@ type Position = { x: int; y: int }
 
 [<RequireQualifiedAccess>]
 module Direction =
-    /// All possible directions of rotation in a clockwise order.
+    /// All possible directions in the clockwise order.
     let all = [ Direction.Up; Direction.Right; Direction.Down; Direction.Left ]
 
     /// <summary>
