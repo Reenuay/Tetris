@@ -3,6 +3,8 @@
 module Tetris.Core.Tetromino
 
 
+type Orientation = Direction
+
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
 /// - I: Line
@@ -82,20 +84,14 @@ let private Z =
     ]
     |> Block.create
 
-/// <summary>
-/// Gets the block representation of a tetromino in the given orientation.
-/// </summary>
-/// <param name="orientation">The orientation of the tetromino.</param>
-/// <param name="tetromino">The tetromino.</param>
-/// <returns>The block representation of the tetromino in the given orientation.</returns>
 let private rotateByOrientation orientation =
     match orientation with
-    | Direction.Up -> id
-    | Direction.Right -> Block.rotateClockwise
-    | Direction.Down -> Block.rotateClockwise >> Block.rotateClockwise
-    | Direction.Left -> Block.rotateClockwise >> Block.rotateClockwise >> Block.rotateClockwise
+    | Orientation.Up -> id
+    | Orientation.Right -> Block.rotateClockwise
+    | Orientation.Down -> Block.rotateClockwise >> Block.rotateClockwise
+    | Orientation.Left -> Block.rotateClockwise >> Block.rotateClockwise >> Block.rotateClockwise
 
-/// A lazy cache of all possible block representations of all tetrominoes in all orientations.
+// A lazy cache of all possible block representations of all tetrominoes in all orientations.
 let private blockCache =
     lazy
         [ Tetromino.I, I
