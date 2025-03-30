@@ -2,21 +2,6 @@ namespace Tetris.Core
 
 
 /// <summary>
-/// Represents a tile that can be either empty or occupied.
-/// </summary>
-[<Struct>]
-[<RequireQualifiedAccess>]
-type Tile =
-    | Empty
-    | Occupied
-
-[<Struct>]
-[<RequireQualifiedAccess>]
-type Rotation =
-    | Clockwise
-    | CounterClockwise
-
-/// <summary>
 /// Represents the direction of orientation or movement.
 /// </summary>
 [<Struct>]
@@ -26,12 +11,6 @@ type Direction =
     | Right
     | Down
     | Left
-
-/// <summary>
-/// Represents the position in a two-dimensional space.
-/// </summary>
-[<Struct>]
-type Position = { x: int; y: int }
 
 [<RequireQualifiedAccess>]
 module Direction =
