@@ -40,6 +40,11 @@ let private validateHeight tiles =
     else
         Ok()
 
+/// <summary>
+/// Creates a new grid from the given tiles.
+/// </summary>
+/// <param name="tiles">The tiles to create the grid from.</param>
+/// <returns>A result containing the grid or the errors that occurred during the creation.</returns>
 let tryCreate tiles =
     validation {
         let! _ = validateNull tiles // short curcuits here
