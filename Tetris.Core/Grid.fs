@@ -13,29 +13,32 @@ type Grid = private { Tiles: Tile[,] }
 /// Represents the possible errors that can occur during the creation of a grid.
 /// </summary>
 type GridCreationError =
+    | NullTiles
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
+/// Minimal width of the grid.
 let minWidth = 10
 
-let minHeight = 10
+/// Minimal height of the grid.
+let minHeight = 20
 
-let private create width height =
-    let tiles = Tile.Empty |> konst |> konst |> Array2D.init width height
+let private create tiles = { Tiles = tiles }
 
-    { Tiles = tiles }
+let private validateNull tiles =
+    if isNull tiles then Error [ NullTiles ] else Ok()
 
-let private validateWidth width =
-    if width < minWidth then
-        Error [ WidthTooSmall(minWidth, width) ]
+let private validateWidth tiles =
+    if tiles |> Array2D.length2 < minWidth then
+        Error [ WidthTooSmall(minWidth, tiles |> Array2D.length1) ]
     else
-        Ok width
+        Ok()
 
-let private validateHeight height =
-    if height < minHeight then
-        Error [ HeightTooSmall(minHeight, height) ]
+let private validateHeight tiles =
+    if tiles |> Array2D.length1 < minHeight then
+        Error [ HeightTooSmall(minHeight, tiles |> Array2D.length2) ]
     else
-        Ok height
+        Ok()
 
 /// <summary>
 /// Tries to create a new grid with the given width and height.
@@ -43,8 +46,13 @@ let private validateHeight height =
 /// <param name="width">The width of the grid.</param>
 /// <param name="height">The height of the grid.</param>
 /// <returns>A result containing the grid or an error.</returns>
-let tryCreate width height =
-    create <!> validateWidth width <*> validateHeight height
+let tryCreate tiles =
+    monad {
+        do! validateNull tiles
+        do! validateWidth tiles
+        do! validateHeight tiles
+        return { Tiles = Array2D.copy tiles }
+    }
 
 /// <summary>
 /// Checks if the given block can be placed at the given position on the given grid.
