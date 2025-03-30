@@ -1,7 +1,7 @@
 [<RequireQualifiedAccess>]
 module Tetris.Core.Grid
 
-open FSharpPlus
+open FsToolkit.ErrorHandling
 
 
 /// <summary>
@@ -12,7 +12,7 @@ type Grid = private { Tiles: Tile[,] }
 /// <summary>
 /// Represents the possible errors that can occur during the creation of a grid.
 /// </summary>
-type GridCreationError =
+type GridCreationFailure =
     | NullTiles
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
@@ -30,28 +30,22 @@ let private validateNull tiles =
 
 let private validateWidth tiles =
     if tiles |> Array2D.length2 < minWidth then
-        Error [ WidthTooSmall(minWidth, tiles |> Array2D.length1) ]
+        Error [ WidthTooSmall(minWidth, tiles |> Array2D.length2) ]
     else
         Ok()
 
 let private validateHeight tiles =
     if tiles |> Array2D.length1 < minHeight then
-        Error [ HeightTooSmall(minHeight, tiles |> Array2D.length2) ]
+        Error [ HeightTooSmall(minHeight, tiles |> Array2D.length1) ]
     else
         Ok()
 
-/// <summary>
-/// Tries to create a new grid with the given width and height.
-/// </summary>
-/// <param name="width">The width of the grid.</param>
-/// <param name="height">The height of the grid.</param>
-/// <returns>A result containing the grid or an error.</returns>
 let tryCreate tiles =
-    monad {
-        do! validateNull tiles
-        do! validateWidth tiles
-        do! validateHeight tiles
-        return { Tiles = Array2D.copy tiles }
+    validation {
+        let! _ = validateNull tiles // short curcuits here
+        let! _ = validateWidth tiles
+        and! _ = validateHeight tiles
+        return create tiles
     }
 
 /// <summary>
