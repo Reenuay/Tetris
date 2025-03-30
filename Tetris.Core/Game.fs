@@ -3,7 +3,6 @@ module Tetris.Core.Game
 
 
 type Grid = Grid.Grid
-type Tetromino = Tetromino.Tetromino
 
 /// <summary>
 /// Represents the state of the game.
