@@ -19,7 +19,7 @@ type Game =
 /// </summary>
 let standardTetrominoGenerator () =
     let rnd = System.Random()
-    fun () -> Tetromino.all.[rnd.Next(Tetromino.all.Length)]
+    fun () -> Tetromino.all[rnd.Next Tetromino.all.Length]
 
 /// <summary>
 /// Creates a new game using the given playfield and tetromino generator.
