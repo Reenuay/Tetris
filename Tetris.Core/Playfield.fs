@@ -74,7 +74,7 @@ let tryCreate tiles =
 /// <param name="y">The y position of the tile.</param>
 /// <param name="playfield">The playfield to get the tile from.</param>
 /// <returns>The tile at the given position on the playfield.</returns>
-let getTile x y playfield = playfield.Tiles[x, y]
+let getTile x y playfield = playfield.Tiles[y, x]
 
 /// <summary>
 /// Checks if the given playfield can place the given piece.
@@ -122,12 +122,12 @@ let canPlace piece playfield =
     isWithinBounds && hasNoCollision ()
 
 /// <summary>
-/// Fixes the given piece on the given playfield.
+/// Tries to fix the given piece on the playfield.
 /// </summary>
 /// <param name="piece">The piece to fix.</param>
 /// <param name="playfield">The playfield to fix the piece on.</param>
-/// <returns>An option containing the fixed playfield or None if the piece could not be placed.</returns>
-let tryFix piece playfield =
+/// <returns>A result containing the new playfield or the original playfield if the piece could not be fixed.</returns>
+let fixPiece piece playfield =
     if canPlace piece playfield then
         let newPlayfield = { Tiles = playfield.Tiles |> Array2D.copy }
         let block = piece |> Piece.toBlock
@@ -140,12 +140,43 @@ let tryFix piece playfield =
             let mutable j = 0
 
             while j < blockHeight do
-                newPlayfield.Tiles[position.x + i, position.y + j] <- Block.getTile i j block
+                newPlayfield.Tiles[position.y + j, position.x + i] <- Block.getTile i j block
 
                 j <- j + 1
 
             i <- i + 1
 
-        Some newPlayfield
+        Ok newPlayfield
     else
-        None
+        Error playfield
+
+let clearLines playfield =
+    let width = width playfield
+    let height = height playfield
+    let newTiles = Array2D.create height width Tile.Empty
+    let mutable clearedLines = []
+    let mutable i = height - 1 // Source index (old array)
+    let mutable j = height - 1 // Destination index (new array)
+
+    while i >= 0 do
+        let mutable shouldClear = true
+        let mutable x = 0
+
+        // Check if line needs to be cleared
+        while shouldClear && x < width do
+            shouldClear <- playfield.Tiles[i, x] = Tile.Occupied
+            x <- x + 1
+
+        if shouldClear then
+            // Line should be cleared - add to cleared lines and skip copying
+            clearedLines <- i :: clearedLines
+            i <- i - 1
+        else
+            // Copy line from old array to new array
+            for x in 0 .. width - 1 do
+                newTiles[j, x] <- playfield.Tiles[i, x]
+
+            i <- i - 1
+            j <- j - 1
+
+    { Tiles = newTiles }, clearedLines

@@ -37,4 +37,4 @@ let ``tryCreate fails when width and height are too small`` () =
 let ``tryCreate succeeds when given tiles are valid`` () =
     let tiles = Array2D.create Playfield.minHeight Playfield.minWidth Tile.Empty
 
-    Playfield.tryCreate tiles |> Result.shouldBeOk
+    Playfield.tryCreate tiles |> Result.assertOk ignore

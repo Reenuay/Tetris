@@ -2,6 +2,8 @@
 namespace Tetris.Core
 
 
+module Orientation = Direction
+
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
 /// - I: Line
@@ -32,6 +34,9 @@ module Tetromino =
     /// All tetrominoes.
     let all = [ I; J; L; O; S; T; Z ]
 
+    let private createBlockUnsafe tiles =
+        tiles |> Block.tryCreate |> Result.defaultWith (fun _ -> failwith "Invalid block")
+
     let private I =
         array2D [
             [ o; x; o; o ]
@@ -39,7 +44,7 @@ module Tetromino =
             [ o; x; o; o ]
             [ o; x; o; o ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private J =
         array2D [
@@ -47,7 +52,7 @@ module Tetromino =
             [ o; x; o ]
             [ x; x; o ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private L =
         array2D [
@@ -55,14 +60,14 @@ module Tetromino =
             [ o; x; o ]
             [ o; x; x ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private O =
         array2D [
             [ x; x ]
             [ x; x ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private S =
         array2D [
@@ -70,7 +75,7 @@ module Tetromino =
             [ x; x; o ]
             [ o; o; o ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private T =
         array2D [
@@ -78,7 +83,7 @@ module Tetromino =
             [ x; x; x ]
             [ o; o; o ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
     let private Z =
         array2D [
@@ -86,14 +91,11 @@ module Tetromino =
             [ o; x; x ]
             [ o; o; o ]
         ]
-        |> Block.create
+        |> createBlockUnsafe
 
-    let private rotateByOrientation orientation =
-        match orientation with
-        | Orientation.Up -> id
-        | Orientation.Right -> Block.rotateClockwise
-        | Orientation.Down -> Block.rotateClockwise >> Block.rotateClockwise
-        | Orientation.Left -> Block.rotateClockwise >> Block.rotateClockwise >> Block.rotateClockwise
+    let private rotateTimes times block =
+        [ 1 ..times ]
+        |> List.fold (fun block _ -> Block.rotateClockwise block) block
 
     // A lazy cache of all possible block representations of all tetrominoes in all orientations.
     let private blockCache =
@@ -106,9 +108,9 @@ module Tetromino =
               Tetromino.T, T
               Tetromino.Z, Z ]
             |> List.collect (fun (tetrominoType, blockInInitialOrientation) ->
-                Direction.all
-                |> List.map (fun orientation ->
-                    (tetrominoType, orientation), rotateByOrientation orientation blockInInitialOrientation))
+                Orientation.all
+                |> List.mapi (fun i orientation ->
+                    (tetrominoType, orientation), rotateTimes (i + 1) blockInInitialOrientation))
             |> Map.ofList
 
     /// <summary>

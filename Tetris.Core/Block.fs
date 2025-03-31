@@ -1,6 +1,8 @@
 [<RequireQualifiedAccess>]
 module Tetris.Core.Block
 
+open FsToolkit.ErrorHandling
+
 
 /// <summary>
 /// Represents a block of tiles.
@@ -8,11 +10,42 @@ module Tetris.Core.Block
 type Block = private { Tiles: Tile[,] }
 
 /// <summary>
+/// Represents possible errors that can occur when creating a block.
+/// </summary>
+type BlockCreationError =
+    | ZeroWidth
+    | ZeroHeight
+
+let private failIfNull tiles =
+    if isNull tiles then
+        failwith "Tiles cannot be null"
+
+let private validateWidth tiles =
+    if tiles |> Array2D.length2 < 1 then
+        Error [ ZeroWidth ]
+    else
+        Ok()
+
+let private validateHeight tiles =
+    if tiles |> Array2D.length1 < 1 then
+        Error [ ZeroHeight ]
+    else
+        Ok()
+
+/// <summary>
 /// Creates a new block from the given tiles.
 /// </summary>
-/// <param name="tiles">The tiles that make up the block.</param>
-/// <returns>A new block.</returns>
-let create tiles = { Tiles = tiles |> Array2D.copy }
+/// <param name="tiles">The tiles to create the block from.</param>
+/// <returns>The created block if successful, otherwise an error.</returns>
+/// <remarks>Fails if the tiles are null.</remarks>
+let tryCreate tiles =
+    validation {
+        do failIfNull tiles
+        let! _ = validateWidth tiles
+        and! _ = validateHeight tiles
+
+        return { Tiles = tiles |> Array2D.copy }
+    }
 
 /// <summary>
 /// Gets the width of the block.
@@ -34,13 +67,13 @@ let height block = Array2D.length1 block.Tiles
 /// <param name="block">The block to rotate.</param>
 /// <returns>The rotated block.</returns>
 let rotateClockwise block =
-    let width = Array2D.length2 block.Tiles
-    let height = Array2D.length1 block.Tiles
-    let rotated = Array2D.create width height Tile.Empty
+    let width = width block
+    let height = height block
+    let rotated = Array2D.create width height Tile.Empty // Swap width and height
 
-    for i in 0 .. height - 1 do
-        for j in 0 .. width - 1 do
-            rotated[j, width - 1 - i] <- block.Tiles[i, j]
+    for i in 0 .. width - 1 do
+        for j in 0 .. height - 1 do
+            rotated[i, height - 1 - j] <- block.Tiles[j, i]
 
     { Tiles = rotated }
 
@@ -51,3 +84,13 @@ let rotateClockwise block =
 /// <param name="y">The y-coordinate of the tile.</param>
 /// <param name="block">The block to get the tile from.</param>
 let getTile x y block = block.Tiles[y, x]
+
+/// <summary>
+/// Converts a block to an array of tiles.
+/// </summary>
+/// <param name="block">The block to convert.</param>
+/// <returns>An array of tiles.</returns>
+/// <remarks>
+/// The returned array is a copy of the original block's tiles.
+/// </remarks>
+let toArray block = block.Tiles |> Array2D.copy
