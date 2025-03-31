@@ -23,7 +23,7 @@ let minWidth = 10
 /// Minimal height of the grid.
 let minHeight = 20
 
-let private create tiles = { Tiles = tiles }
+let private create tiles = { Tiles = tiles |> Array2D.copy }
 
 let private validateNull tiles =
     if isNull tiles then Error [ NullTiles ] else Ok()
