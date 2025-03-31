@@ -9,45 +9,31 @@ open FsUnitTyped
 let ``Grid.tryCreate fails when tiles is null`` () =
     let tiles = null
 
-    Grid.tryCreate tiles
-    |> Result.map (fun _ -> failwith "Expected Error")
-    |> Result.defaultWith (fun errors -> errors |> shouldEqual [ Grid.NullTiles ])
+    Grid.tryCreate tiles |> Result.shouldBeError [ Grid.NullTiles ]
 
 [<Fact>]
 let ``Grid.tryCreate fails when width is too small`` () =
-    let tiles = always [ Tile.Empty ] |> List.init Grid.minHeight |> array2D
+    let tiles = Array2D.create Grid.minHeight 0 Tile.Empty
 
     Grid.tryCreate tiles
-    |> Result.map (fun _ -> failwith "Expected Error")
-    |> Result.defaultWith (fun errors -> errors |> shouldEqual [ Grid.WidthTooSmall(Grid.minWidth, 1) ])
-
+    |> Result.shouldBeError [ Grid.WidthTooSmall(Grid.minWidth, 0) ]
 
 [<Fact>]
 let ``Grid.tryCreate fails when height is too small`` () =
-    let tiles =
-        always Tile.Empty |> List.init Grid.minWidth |> List.singleton |> array2D
+    let tiles = Array2D.create 0 Grid.minWidth Tile.Empty
 
     Grid.tryCreate tiles
-    |> Result.map (fun _ -> failwith "Expected Error")
-    |> Result.defaultWith (fun errors -> errors |> shouldEqual [ Grid.HeightTooSmall(Grid.minHeight, 1) ])
+    |> Result.shouldBeError [ Grid.HeightTooSmall(Grid.minHeight, 0) ]
 
 [<Fact>]
 let ``Grid.tryCreate fails when width and height are too small`` () =
-    let tiles = always Tile.Empty |> List.init 1 |> List.singleton |> array2D
+    let tiles = Array2D.create 0 0 Tile.Empty
 
     Grid.tryCreate tiles
-    |> Result.map (fun _ -> failwith "Expected Error")
-    |> Result.defaultWith (fun errors ->
-        errors
-        |> shouldEqual [ Grid.WidthTooSmall(Grid.minWidth, 1); Grid.HeightTooSmall(Grid.minHeight, 1) ])
+    |> Result.shouldBeError [ Grid.WidthTooSmall(Grid.minWidth, 0); Grid.HeightTooSmall(Grid.minHeight, 0) ]
 
 [<Fact>]
 let ``Grid.tryCreate succeeds when given tiles are valid`` () =
-    let tiles =
-        always Tile.Empty
-        |> List.init Grid.minWidth
-        |> always
-        |> List.init Grid.minHeight
-        |> array2D
+    let tiles = Array2D.create Grid.minHeight Grid.minWidth Tile.Empty
 
-    Grid.tryCreate tiles |> Result.isOk |> shouldEqual true
+    Grid.tryCreate tiles |> Result.shouldBeOk
