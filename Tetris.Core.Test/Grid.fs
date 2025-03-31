@@ -2,7 +2,6 @@ module Tetris.Core.Test.Grid
 
 open Tetris.Core
 open Xunit
-open FsUnitTyped
 
 
 [<Fact>]
