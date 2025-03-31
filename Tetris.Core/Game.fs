@@ -10,8 +10,8 @@ type Playfield = Playfield.Playfield
 type Game =
     private
         { Playfield: Playfield
-          Current: Piece option
-          Next: Tetromino
+          CurrentPiece: Piece option
+          NextTetromino: Tetromino
           TetrominoGenerator: unit -> Tetromino }
 
 /// <summary>
@@ -29,6 +29,27 @@ let createStandardTetrominoGenerator () =
 /// <returns>A new game.</returns>
 let create playfield tetrominoGenerator =
     { Playfield = playfield
-      Current = None
-      Next = tetrominoGenerator ()
+      CurrentPiece = None
+      NextTetromino = tetrominoGenerator ()
       TetrominoGenerator = tetrominoGenerator }
+
+/// <summary>
+/// Gets the next tetromino in the game.
+/// </summary>
+/// <param name="game">The game to get the next tetromino from.</param>
+/// <returns>The next tetromino in the game.</returns>
+let nextTetromino game = game.NextTetromino
+
+/// <summary>
+/// Gets the current piece in the game.
+/// </summary>
+/// <param name="game">The game to get the current piece from.</param>
+/// <returns>The current piece in the game.</returns>
+let currentPiece game = game.CurrentPiece
+
+/// <summary>
+/// Gets the playfield in the game.
+/// </summary>
+/// <param name="game">The game to get the playfield from.</param>
+/// <returns>The playfield in the game.</returns>
+let playfield game = game.Playfield
