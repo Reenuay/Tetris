@@ -4,13 +4,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Common.fs" />
+    
     <Compile Include="Rotation.fs" />
     <Compile Include="Direction.fs" />
     <Compile Include="Position.fs" />
     <Compile Include="Tile.fs" />
     <Compile Include="Block.fs" />
     <Compile Include="Tetromino.fs" />
+    <Compile Include="Piece.fs" />
     <Compile Include="Grid.fs" />
     <Compile Include="Game.fs" />
   </ItemGroup>

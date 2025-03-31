@@ -7,4 +7,8 @@ type Grid = Grid.Grid
 /// <summary>
 /// Represents the state of the game.
 /// </summary>
-type Game = { Playfield: Grid; Next: Tetromino }
+type Game =
+    private
+        { Playfield: Grid
+          Current: Piece option
+          Next: Tetromino }

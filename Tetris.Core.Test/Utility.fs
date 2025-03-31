@@ -2,6 +2,7 @@ namespace Tetris.Core.Test
 
 open FsUnitTyped
 
+
 module Result =
     /// <summary>
     /// Asserts that the given result is an error with the given value.
