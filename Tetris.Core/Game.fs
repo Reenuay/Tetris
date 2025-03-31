@@ -15,7 +15,7 @@ type Game =
           TetrominoGenerator: unit -> Tetromino }
 
 /// <summary>
-/// Creates a standard tetromino generator using the given seed.
+/// Creates a standard tetromino generator using System.Random.
 /// </summary>
 let createStandardTetrominoGenerator () =
     let rnd = System.Random()
