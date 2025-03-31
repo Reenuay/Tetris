@@ -112,7 +112,7 @@ module Tetromino =
             |> Map.ofList
 
     /// <summary>
-    /// Gets the block representation of a tetromino in the given orientation.
+    /// Gets the block representation of the tetromino in the given orientation.
     /// </summary>
     /// <param name="orientation">The orientation of the tetromino.</param>
     /// <param name="tetromino">The tetromino.</param>

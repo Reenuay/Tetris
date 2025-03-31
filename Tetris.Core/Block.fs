@@ -26,14 +26,14 @@ type Block =
 let create tiles = { Tiles = tiles |> Array2D.copy }
 
 /// <summary>
-/// Gets the width of a block.
+/// Gets the width of the block.
 /// </summary>
 /// <param name="block">The block to get the width of.</param>
 /// <returns>The width of the block.</returns>
 let width block = Array2D.length2 block.Tiles
 
 /// <summary>
-/// Gets the height of a block.
+/// Gets the height of the block.
 /// </summary>
 /// <param name="block">The block to get the height of.</param>
 /// <returns>The height of the block.</returns>

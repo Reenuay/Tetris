@@ -12,6 +12,11 @@ type Direction =
     | Down
     | Left
 
+/// <summary>
+/// Alias for <see cref="Direction"/>.
+/// </summary>
+type Orientation = Direction
+
 [<RequireQualifiedAccess>]
 module Direction =
     /// All possible directions in the clockwise order.

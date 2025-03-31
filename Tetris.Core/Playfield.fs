@@ -17,11 +17,25 @@ type PlayfieldCreationFailure =
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
-/// Minimal width of the playfield.
+/// Minimal width of a playfield.
 let minWidth = 10
 
-/// Minimal height of the playfield.
+/// Minimal height of a playfield.
 let minHeight = 20
+
+/// <summary>
+/// Gets the width of the playfield.
+/// </summary>
+/// <param name="playfield">The playfield to get the width from.</param>
+/// <returns>The width of the playfield.</returns>
+let width playfield = playfield.Tiles |> Array2D.length2
+
+/// <summary>
+/// Gets the height of the playfield.
+/// </summary>
+/// <param name="playfield">The playfield to get the height from.</param>
+/// <returns>The height of the playfield.</returns>
+let height playfield = playfield.Tiles |> Array2D.length1
 
 let private create tiles = { Tiles = tiles |> Array2D.copy }
 
@@ -54,18 +68,14 @@ let tryCreate tiles =
     }
 
 /// <summary>
-/// Represents a standard playfield with the width of 10 and the height of 20.
+/// Checks if the given playfield can place the given piece.
 /// </summary>
-let standard = create (Array2D.create minWidth minHeight Tile.Empty)
-
-/// <summary>
-/// Checks if the given block can be placed at the given position on the given playfield.
-/// </summary>
-/// <param name="block">The block to check.</param>
-/// <param name="position">The position to check.</param>
+/// <param name="piece">The piece to check.</param>
 /// <param name="playfield">The playfield to check.</param>
-/// <returns>True if the block can be placed at the given position on the given playfield, false otherwise.</returns>
-let canPlace block position playfield =
+/// <returns>True if the piece can be placed on the playfield, false otherwise.</returns>
+let canPlace piece playfield =
+    let block = piece |> Piece.toBlock
+    let position = piece.Position
     let blockWidth = block |> Block.width
     let blockHeight = block |> Block.height
     let playfieldWidth = playfield.Tiles |> Array2D.length1
