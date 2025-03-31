@@ -17,7 +17,7 @@ type Game =
 /// <summary>
 /// Creates a standard tetromino generator using the given seed.
 /// </summary>
-let standardTetrominoGenerator () =
+let createStandardTetrominoGenerator () =
     let rnd = System.Random()
     fun () -> Tetromino.all[rnd.Next Tetromino.all.Length]
 
