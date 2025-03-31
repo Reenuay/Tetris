@@ -1,5 +1,4 @@
-[<AutoOpen>]
-module Tetris.Core.Test.Utility
+namespace Tetris.Core.Test
 
 open FsUnitTyped
 
