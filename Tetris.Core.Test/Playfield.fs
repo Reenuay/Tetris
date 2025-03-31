@@ -2,39 +2,37 @@ module Tetris.Core.Test.Playfield
 
 open Tetris.Core
 open Xunit
+open FsUnitTyped
 
 
 [<Fact>]
 let ``tryCreate fails when tiles is null`` () =
-    let tiles = null
-
-    Playfield.tryCreate tiles |> Result.shouldBeError [ Playfield.NullTiles ]
+    shouldFail (fun _ -> Playfield.tryCreate null |> ignore)
 
 [<Fact>]
-let ``tryCreate fails when width is too small`` () =
-    let tiles = Array2D.create Playfield.minHeight 0 Tile.Empty
-
-    Playfield.tryCreate tiles
-    |> Result.shouldBeError [ Playfield.WidthTooSmall(Playfield.minWidth, 0) ]
-
-[<Fact>]
-let ``tryCreate fails when height is too small`` () =
-    let tiles = Array2D.create 0 Playfield.minWidth Tile.Empty
-
-    Playfield.tryCreate tiles
-    |> Result.shouldBeError [ Playfield.HeightTooSmall(Playfield.minHeight, 0) ]
+let ``tryCreate returns error when width is too small`` () =
+    Array2D.create Playfield.minHeight 0 Tile.Empty
+    |> Playfield.tryCreate
+    |> Result.assertError (isExactly [ Playfield.WidthTooSmall(Playfield.minWidth, 0) ])
 
 [<Fact>]
-let ``tryCreate fails when width and height are too small`` () =
-    let tiles = Array2D.create 0 0 Tile.Empty
+let ``tryCreate returns error when height is too small`` () =
+    Array2D.create 0 Playfield.minWidth Tile.Empty
+    |> Playfield.tryCreate
+    |> Result.assertError (isExactly [ Playfield.HeightTooSmall(Playfield.minHeight, 0) ])
 
-    Playfield.tryCreate tiles
-    |> Result.shouldBeError
-        [ Playfield.WidthTooSmall(Playfield.minWidth, 0)
-          Playfield.HeightTooSmall(Playfield.minHeight, 0) ]
+[<Fact>]
+let ``tryCreate returns error when width and height are too small`` () =
+    Array2D.create 0 0 Tile.Empty
+    |> Playfield.tryCreate
+    |> Result.assertError (
+        isExactly
+            [ Playfield.WidthTooSmall(Playfield.minWidth, 0)
+              Playfield.HeightTooSmall(Playfield.minHeight, 0) ]
+    )
 
 [<Fact>]
 let ``tryCreate succeeds when given tiles are valid`` () =
-    let tiles = Array2D.create Playfield.minHeight Playfield.minWidth Tile.Empty
-
-    Playfield.tryCreate tiles |> Result.assertOk ignore
+    Array2D.create Playfield.minHeight Playfield.minWidth Tile.Empty
+    |> Playfield.tryCreate
+    |> Result.assertOk ignore

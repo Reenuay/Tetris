@@ -13,7 +13,6 @@ type Playfield = private { Tiles: Tile[,] }
 /// Represents the possible errors that can occur during the creation of a playfield.
 /// </summary>
 type PlayfieldCreationFailure =
-    | NullTiles
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
@@ -37,10 +36,9 @@ let width playfield = playfield.Tiles |> Array2D.length2
 /// <returns>The height of the playfield.</returns>
 let height playfield = playfield.Tiles |> Array2D.length1
 
-let private create tiles = { Tiles = tiles |> Array2D.copy }
-
-let private validateNull tiles =
-    if isNull tiles then Error [ NullTiles ] else Ok()
+let private failIfNull tiles =
+    if isNull tiles then
+        nullArg "Tiles cannot be null"
 
 let private validateWidth tiles =
     if tiles |> Array2D.length2 < minWidth then
@@ -59,12 +57,13 @@ let private validateHeight tiles =
 /// </summary>
 /// <param name="tiles">The tiles to create the playfield from.</param>
 /// <returns>A result containing the playfield or the errors that occurred during the creation.</returns>
+/// /// <exception cref="System.ArgumentNullException">Thrown when tiles is null.</exception>
 let tryCreate tiles =
     validation {
-        let! _ = validateNull tiles // short curcuits here
+        do failIfNull tiles
         let! _ = validateWidth tiles
         and! _ = validateHeight tiles
-        return create tiles
+        return { Tiles = tiles |> Array2D.copy }
     }
 
 /// <summary>

@@ -1,29 +1,39 @@
-namespace Tetris.Core.Test
+[<AutoOpen>]
+module Tetris.Core.Test.Common
 
 open System.Text
-open FsUnitTyped
 
+
+/// <summary>
+/// Constant function that always returns the first argument.
+/// </summary>
+/// <param name="x">The value to return.</param>
+/// <param name="_">The ignored argument.</param>
+/// <returns>The first argument.</returns>
+let inline isExactly x _ = x
 
 module Result =
     /// <summary>
-    /// Asserts that the given result is an error with the given value.
+    /// Runs given assertion on the value inside the result if it is Ok.
     /// </summary>
-    /// <param name="x">The expected error value.</param>
+    /// <param name="assertion">The assertion to run on the value.</param>
     /// <param name="result">The result to assert.</param>
-    let shouldBeError x result =
-        match result with
-        | Ok _ -> failwith "Expected Error"
-        | Error error -> shouldEqual error x
-
-    /// <summary>
-    /// Asserts that the given result is an ok with the given value.
-    /// </summary>
-    /// <param name="assertion">The assertion to apply to the ok value.</param>
-    /// <param name="result">The result to assert.</param>
+    /// <exception cref="System.Exception">Thrown when the result is an Error.</exception>
     let assertOk assertion result =
         match result with
         | Ok value -> assertion value
         | Error _ -> failwith "Expected Ok"
+
+    /// <summary>
+    /// Runs given assertion on the errors inside the result if it is Error.
+    /// </summary>
+    /// <param name="assertion">The assertion to run on the errors.</param>
+    /// <param name="result">The result to assert.</param>
+    /// <exception cref="System.Exception">Thrown when the result is Ok.</exception>
+    let assertError assertion result =
+        match result with
+        | Ok _ -> failwith "Expected Error"
+        | Error errors -> assertion errors |> ignore
 
 module Array2D =
     /// <summary>

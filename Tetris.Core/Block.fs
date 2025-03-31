@@ -18,7 +18,7 @@ type BlockCreationError =
 
 let private failIfNull tiles =
     if isNull tiles then
-        failwith "Tiles cannot be null"
+        nullArg "Tiles cannot be null"
 
 let private validateWidth tiles =
     if tiles |> Array2D.length2 < 1 then
@@ -37,7 +37,7 @@ let private validateHeight tiles =
 /// </summary>
 /// <param name="tiles">The tiles to create the block from.</param>
 /// <returns>The created block if successful, otherwise an error.</returns>
-/// <remarks>Fails if the tiles are null.</remarks>
+/// <exception cref="System.ArgumentNullException">Thrown when tiles is null.</exception>
 let tryCreate tiles =
     validation {
         do failIfNull tiles
