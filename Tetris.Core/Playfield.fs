@@ -1,26 +1,26 @@
 [<RequireQualifiedAccess>]
-module Tetris.Core.Grid
+module Tetris.Core.Playfield
 
 open FsToolkit.ErrorHandling
 
 
 /// <summary>
-/// Represents a 2D grid of tiles.
+/// Represents a 2D playfield.
 /// </summary>
-type Grid = private { Tiles: Tile[,] }
+type Playfield = private { Tiles: Tile[,] }
 
 /// <summary>
-/// Represents the possible errors that can occur during the creation of a grid.
+/// Represents the possible errors that can occur during the creation of a playfield.
 /// </summary>
-type GridCreationFailure =
+type PlayfieldCreationFailure =
     | NullTiles
     | WidthTooSmall of minimalWidth: int * actualWidth: int
     | HeightTooSmall of minimalHeight: int * actualHeight: int
 
-/// Minimal width of the grid.
+/// Minimal width of the playfield.
 let minWidth = 10
 
-/// Minimal height of the grid.
+/// Minimal height of the playfield.
 let minHeight = 20
 
 let private create tiles = { Tiles = tiles |> Array2D.copy }
@@ -41,10 +41,10 @@ let private validateHeight tiles =
         Ok()
 
 /// <summary>
-/// Creates a new grid from the given tiles.
+/// Creates a new playfield from the given tiles.
 /// </summary>
-/// <param name="tiles">The tiles to create the grid from.</param>
-/// <returns>A result containing the grid or the errors that occurred during the creation.</returns>
+/// <param name="tiles">The tiles to create the playfield from.</param>
+/// <returns>A result containing the playfield or the errors that occurred during the creation.</returns>
 let tryCreate tiles =
     validation {
         let! _ = validateNull tiles // short curcuits here
@@ -54,30 +54,30 @@ let tryCreate tiles =
     }
 
 /// <summary>
-/// Represents a standard grid with the withd of 10 and the height of 20.
+/// Represents a standard playfield with the width of 10 and the height of 20.
 /// </summary>
 let standard = create (Array2D.create minWidth minHeight Tile.Empty)
 
 /// <summary>
-/// Checks if the given block can be placed at the given position on the given grid.
+/// Checks if the given block can be placed at the given position on the given playfield.
 /// </summary>
 /// <param name="block">The block to check.</param>
 /// <param name="position">The position to check.</param>
-/// <param name="grid">The grid to check.</param>
-/// <returns>True if the block can be placed at the given position on the given grid, false otherwise.</returns>
-let canPlace block position grid =
+/// <param name="playfield">The playfield to check.</param>
+/// <returns>True if the block can be placed at the given position on the given playfield, false otherwise.</returns>
+let canPlace block position playfield =
     let blockWidth = block |> Block.width
     let blockHeight = block |> Block.height
-    let gridWidth = grid.Tiles |> Array2D.length1
-    let gridHeight = grid.Tiles |> Array2D.length2
+    let playfieldWidth = playfield.Tiles |> Array2D.length1
+    let playfieldHeight = playfield.Tiles |> Array2D.length2
 
     let isWithinBounds =
         position.x >= 0
-        && position.x + blockWidth <= gridWidth
+        && position.x + blockWidth <= playfieldWidth
         && position.y >= 0
-        && position.y + blockHeight <= gridHeight
+        && position.y + blockHeight <= playfieldHeight
 
-    // Check for collision with non-empty tiles on the grid
+    // Check for collision with non-empty tiles on the playfield
     // This has to be a function because the computation has to be deferred
     // Firstly because isWithinBounds has to be checked first so no index out of bounds exception is thrown
     // Secondly because it avoids unnecessary computation if isWithinBounds is false
@@ -91,7 +91,7 @@ let canPlace block position grid =
             while not hasCollision && j < blockHeight do
                 if
                     block[i, j] <> Tile.Empty
-                    && grid.Tiles[position.x + i, position.y + j] <> Tile.Empty
+                    && playfield.Tiles[position.x + i, position.y + j] <> Tile.Empty
                 then
                     hasCollision <- true
 

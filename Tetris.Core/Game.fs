@@ -2,14 +2,14 @@
 module Tetris.Core.Game
 
 
-type Grid = Grid.Grid
+type Playfield = Playfield.Playfield
 
 /// <summary>
 /// Represents the state of the game.
 /// </summary>
 type Game =
     private
-        { Playfield: Grid
+        { Playfield: Playfield
           Current: Piece option
           Next: Tetromino
           TetrominoGenerator: unit -> Tetromino }

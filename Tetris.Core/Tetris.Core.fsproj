@@ -12,7 +12,7 @@
     <Compile Include="Block.fs" />
     <Compile Include="Tetromino.fs" />
     <Compile Include="Piece.fs" />
-    <Compile Include="Grid.fs" />
+    <Compile Include="Playfield.fs" />
     <Compile Include="Game.fs" />
   </ItemGroup>
   <ItemGroup>
