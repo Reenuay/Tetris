@@ -5,18 +5,7 @@ module Tetris.Core.Block
 /// <summary>
 /// Represents a block of tiles.
 /// </summary>
-type Block =
-    private
-        { Tiles: Tile[,] }
-
-    /// <summary>
-    /// Gets the tile at the specified position in the block.
-    /// </summary>
-    /// <param name="x">The x-coordinate of the tile.</param>
-    /// <param name="y">The y-coordinate of the tile.</param>
-    /// <returns>The tile at the specified position in the block.</returns>
-    member this.Item
-        with get (x, y) = this.Tiles[x, y]
+type Block = private { Tiles: Tile[,] }
 
 /// <summary>
 /// Creates a new block from the given tiles.
@@ -51,6 +40,14 @@ let rotateClockwise block =
 
     for i in 0 .. height - 1 do
         for j in 0 .. width - 1 do
-            rotated[j, width - 1 - i] <- block[i, j]
+            rotated[j, width - 1 - i] <- block.Tiles[i, j]
 
     { Tiles = rotated }
+
+/// <summary>
+/// Gets the tile at the given position in the block.
+/// </summary>
+/// <param name="x">The x-coordinate of the tile.</param>
+/// <param name="y">The y-coordinate of the tile.</param>
+/// <param name="block">The block to get the tile from.</param>
+let getTile x y block = block.Tiles[y, x]

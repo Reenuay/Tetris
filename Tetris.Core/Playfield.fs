@@ -68,6 +68,15 @@ let tryCreate tiles =
     }
 
 /// <summary>
+/// Gets the tile at the given position on the playfield.
+/// </summary>
+/// <param name="x">The x position of the tile.</param>
+/// <param name="y">The y position of the tile.</param>
+/// <param name="playfield">The playfield to get the tile from.</param>
+/// <returns>The tile at the given position on the playfield.</returns>
+let getTile x y playfield = playfield.Tiles[x, y]
+
+/// <summary>
 /// Checks if the given playfield can place the given piece.
 /// </summary>
 /// <param name="piece">The piece to check.</param>
@@ -99,11 +108,10 @@ let canPlace piece playfield =
             let mutable j = 0
 
             while not hasCollision && j < blockHeight do
-                if
-                    block[i, j] <> Tile.Empty
-                    && playfield.Tiles[position.x + i, position.y + j] <> Tile.Empty
-                then
-                    hasCollision <- true
+                let blockTile = Block.getTile i j block
+                let playfieldTile = playfield.Tiles[position.x + i, position.y + j]
+
+                hasCollision <- blockTile <> Tile.Empty && playfieldTile <> Tile.Empty
 
                 j <- j + 1
 
@@ -112,3 +120,32 @@ let canPlace piece playfield =
         not hasCollision
 
     isWithinBounds && hasNoCollision ()
+
+/// <summary>
+/// Fixes the given piece on the given playfield.
+/// </summary>
+/// <param name="piece">The piece to fix.</param>
+/// <param name="playfield">The playfield to fix the piece on.</param>
+/// <returns>An option containing the fixed playfield or None if the piece could not be placed.</returns>
+let tryFix piece playfield =
+    if canPlace piece playfield then
+        let newPlayfield = { Tiles = playfield.Tiles |> Array2D.copy }
+        let block = piece |> Piece.toBlock
+        let position = piece.Position
+        let blockWidth = block |> Block.width
+        let blockHeight = block |> Block.height
+        let mutable i = 0
+
+        while i < blockWidth do
+            let mutable j = 0
+
+            while j < blockHeight do
+                newPlayfield.Tiles[position.x + i, position.y + j] <- Block.getTile i j block
+
+                j <- j + 1
+
+            i <- i + 1
+
+        Some newPlayfield
+    else
+        None
