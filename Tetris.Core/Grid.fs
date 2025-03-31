@@ -54,6 +54,11 @@ let tryCreate tiles =
     }
 
 /// <summary>
+/// Represents a standard grid with the withd of 10 and the height of 20.
+/// </summary>
+let standard = create (Array2D.create minWidth minHeight Tile.Empty)
+
+/// <summary>
 /// Checks if the given block can be placed at the given position on the given grid.
 /// </summary>
 /// <param name="block">The block to check.</param>

@@ -29,6 +29,9 @@ module Tetromino =
 
     let private x = Tile.Occupied
 
+    /// All tetrominoes.
+    let all = [ I; J; L; O; S; T; Z ]
+
     let private I =
         array2D [
             [ o; x; o; o ]
