@@ -3,36 +3,37 @@ module Tetris.Core.Test.Playfield
 open Tetris.Core
 open Xunit
 open FsUnitTyped
+open FsCheck.Xunit
+open FsCheck.FSharp
+open FsToolkit.ErrorHandling
 
 
 [<Fact>]
 let ``tryCreate fails when tiles is null`` () =
     shouldFail (fun _ -> Playfield.tryCreate null |> ignore)
 
-[<Fact>]
-let ``tryCreate returns error when width is too small`` () =
-    Array2D.create Playfield.minHeight 0 Tile.Empty
-    |> Playfield.tryCreate
-    |> Result.assertError (isExactly [ Playfield.WidthTooSmall(Playfield.minWidth, 0) ])
+[<Property>]
+let ``tryCreate returns error when width is too small`` (tiles: Tile array2d) =
+    let width = Array2D.length2 tiles
 
-[<Fact>]
-let ``tryCreate returns error when height is too small`` () =
-    Array2D.create 0 Playfield.minWidth Tile.Empty
-    |> Playfield.tryCreate
-    |> Result.assertError (isExactly [ Playfield.HeightTooSmall(Playfield.minHeight, 0) ])
+    width < Playfield.minWidth
+    ==> (Playfield.tryCreate tiles
+         |> Result.mapError (List.contains (Playfield.WidthTooSmall(Playfield.minWidth, width)))
+         |> Result.defaultError false)
 
-[<Fact>]
-let ``tryCreate returns error when width and height are too small`` () =
-    Array2D.create 0 0 Tile.Empty
-    |> Playfield.tryCreate
-    |> Result.assertError (
-        isExactly
-            [ Playfield.WidthTooSmall(Playfield.minWidth, 0)
-              Playfield.HeightTooSmall(Playfield.minHeight, 0) ]
-    )
+[<Property>]
+let ``tryCreate returns error when height is too small`` (tiles: Tile array2d) =
+    let height = Array2D.length1 tiles
 
-[<Fact>]
-let ``tryCreate succeeds when given tiles are valid`` () =
-    Array2D.create Playfield.minHeight Playfield.minWidth Tile.Empty
-    |> Playfield.tryCreate
-    |> Result.assertOk ignore
+    height < Playfield.minHeight
+    ==> (Playfield.tryCreate tiles
+         |> Result.mapError (List.contains (Playfield.HeightTooSmall(Playfield.minHeight, height)))
+         |> Result.defaultError false)
+
+[<Property>]
+let ``tryCreate succeeds with valid dimensions`` (tiles: Tile array2d) =
+    let width = Array2D.length2 tiles
+    let height = Array2D.length1 tiles
+
+    (width >= Playfield.minWidth && height >= Playfield.minHeight)
+    ==> (Playfield.tryCreate tiles |> Result.isOk)
