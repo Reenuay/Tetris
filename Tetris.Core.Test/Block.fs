@@ -17,19 +17,19 @@ let ``tryCreate fails when tiles is null`` () =
 let ``tryCreate returns error when width is zero`` () =
     Array2D.create 2 0 o
     |> Block.tryCreate
-    |> Result.assertError (isExactly [ Block.ZeroWidth ])
+    |> Result.assertError (shouldEqual [ Block.ZeroWidth ])
 
 [<Fact>]
 let ``tryCreate returns error when height is zero`` () =
     Array2D.create 0 2 o
     |> Block.tryCreate
-    |> Result.assertError (isExactly [ Block.ZeroHeight ])
+    |> Result.assertError (shouldEqual [ Block.ZeroHeight ])
 
 [<Fact>]
 let ``tryCreate returns error when width and height are zero`` () =
     Array2D.create 0 0 o
     |> Block.tryCreate
-    |> Result.assertError (isExactly [ Block.ZeroWidth; Block.ZeroHeight ])
+    |> Result.assertError (shouldEqual [ Block.ZeroWidth; Block.ZeroHeight ])
 
 [<Theory>]
 [<InlineData(1, 1)>]

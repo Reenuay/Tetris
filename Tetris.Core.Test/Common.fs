@@ -4,14 +4,6 @@ module Tetris.Core.Test.Common
 open System.Text
 
 
-/// <summary>
-/// Constant function that always returns the first argument.
-/// </summary>
-/// <param name="x">The value to return.</param>
-/// <param name="_">The ignored argument.</param>
-/// <returns>The first argument.</returns>
-let inline isExactly x _ = x
-
 module Result =
     /// <summary>
     /// Runs given assertion on the value inside the result if it is Ok.
