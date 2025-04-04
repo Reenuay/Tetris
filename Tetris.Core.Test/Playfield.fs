@@ -37,3 +37,26 @@ let ``tryCreate succeeds with valid dimensions`` (tiles: Tile array2d) =
 
     (width >= Playfield.minWidth && height >= Playfield.minHeight)
     ==> (Playfield.tryCreate tiles |> Result.isOk)
+
+[<Property>]
+let ``tryCreate copies the input array`` (tiles: Tile array2d) =
+    let width = Array2D.length2 tiles
+    let height = Array2D.length1 tiles
+
+    (width >= Playfield.minWidth
+     && height >= Playfield.minHeight
+     && width > 0
+     && height > 0)
+    ==> (Playfield.tryCreate tiles
+         |> Result.map (fun playfield ->
+             let originalTile = Playfield.getTile 0 0 playfield
+
+             tiles[0, 0] <-
+                 if originalTile = Tile.Empty then
+                     Tile.Occupied
+                 else
+                     Tile.Empty
+
+             let tileAfterChange = Playfield.getTile 0 0 playfield
+             tileAfterChange = originalTile)
+         |> Result.defaultValue false)

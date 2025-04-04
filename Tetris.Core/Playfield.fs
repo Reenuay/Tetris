@@ -36,19 +36,15 @@ let width playfield = playfield.Tiles |> Array2D.length2
 /// <returns>The height of the playfield.</returns>
 let height playfield = playfield.Tiles |> Array2D.length1
 
-let private failIfNull tiles =
-    if isNull tiles then
-        nullArg "Tiles cannot be null"
-
 let private validateWidth tiles =
     if tiles |> Array2D.length2 < minWidth then
-        Error [ WidthTooSmall(minWidth, tiles |> Array2D.length2) ]
+        Error(WidthTooSmall(minWidth, tiles |> Array2D.length2))
     else
         Ok()
 
 let private validateHeight tiles =
     if tiles |> Array2D.length1 < minHeight then
-        Error [ HeightTooSmall(minHeight, tiles |> Array2D.length1) ]
+        Error(HeightTooSmall(minHeight, tiles |> Array2D.length1))
     else
         Ok()
 
@@ -60,9 +56,12 @@ let private validateHeight tiles =
 /// /// <exception cref="System.ArgumentNullException">Thrown when tiles is null.</exception>
 let tryCreate tiles =
     validation {
-        do failIfNull tiles
+        if isNull tiles then
+            nullArg "Tiles cannot be null"
+
         let! _ = validateWidth tiles
         and! _ = validateHeight tiles
+
         return { Tiles = tiles |> Array2D.copy }
     }
 
