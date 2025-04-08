@@ -3,16 +3,14 @@ module Tetris.Core.Test.Playfield
 
 open Tetris.Core
 open Tetris.Core.Test.Arbitrary
-open Xunit
-open FsUnitTyped
 open FsCheck.Xunit
 open FsCheck.FSharp
 open FsToolkit.ErrorHandling
 
 
-[<Fact>]
+[<Property>]
 let ``tryCreate fails when tiles is null`` () =
-    shouldFail (fun _ -> Playfield.tryCreate null |> ignore)
+    lazy Playfield.tryCreate null |> Prop.throws
 
 [<Property>]
 let ``tryCreate returns error when width is too small`` (Playfield.InvalidWidthArray tiles) =
