@@ -6,7 +6,8 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Common.fs" />
+    <Compile Include="Common.fs" /><Compile Include="Generator.fs" />
+    <Compile Include="Arbitrary.fs" />
     <Compile Include="Block.fs" />
     <Compile Include="Playfield.fs" />
     <Compile Include="Program.fs" />
