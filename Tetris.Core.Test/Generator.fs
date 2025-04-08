@@ -20,3 +20,11 @@ module Playfield =
             let! height = generateDimension isValidHeight Playfield.minHeight
             return! Gen.array2DOfDim height width Tile.tile
         }
+
+    let tileArrayWithCoordinate isValidWidth isValidHeight =
+        gen {
+            let! tiles = tileArray isValidWidth isValidHeight
+            let! x = Gen.choose (0, Array2D.length2 tiles - 1)
+            let! y = Gen.choose (0, Array2D.length1 tiles - 1)
+            return tiles, x, y
+        }

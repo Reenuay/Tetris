@@ -6,29 +6,22 @@ open FsCheck.FSharp
 
 [<RequireQualifiedAccess>]
 module Playfield =
-    /// <summary>
     /// Represents a 2D array of tiles with invalid width and valid height.
-    /// </summary>
-    type InvalidWidthArray = InvalidWidthArray of Tile array2d
+    type InvalidWidthArray = InvalidWidthArray of tiles: Tile array2d
 
-    /// <summary>
     /// Represents a 2D array of tiles with valid width and invalid height.
-    /// </summary>
-    type InvalidHeightArray = InvalidHeightArray of Tile array2d
+    type InvalidHeightArray = InvalidHeightArray of tiles: Tile array2d
 
-    /// <summary>
     /// Represents a 2D array of tiles with invalid width and height.
-    /// </summary>
-    type InvalidSizeTileArray = InvalidSizeTileArray of Tile array2d
+    type InvalidSizeTileArray = InvalidSizeTileArray of tiles: Tile array2d
 
-    /// <summary>
     /// Represents a 2D array of tiles with valid width and height.
-    /// </summary>
-    type ValidArray = ValidArray of Tile array2d
+    type ValidArray = ValidArray of tiles: Tile array2d
 
-    /// <summary>
+    /// Represents a 2D array of tiles with valid width and height and a valid coordinate inside the array.
+    type ValidArrayWithCoordinate = ValidArrayWithCoordinate of tiles: Tile array2d * x: int * y: int
+
     /// Extension methods for the Arbitrary module.
-    /// </summary>
     type Extension =
         static member InvalidWidthArray() =
             Arb.fromGen (Generator.Playfield.tileArray false true |> Gen.map InvalidWidthArray)
@@ -41,3 +34,9 @@ module Playfield =
 
         static member ValidArray() =
             Arb.fromGen (Generator.Playfield.tileArray true true |> Gen.map ValidArray)
+
+        static member ValidArrayWithCoordinate() =
+            Arb.fromGen (
+                Generator.Playfield.tileArrayWithCoordinate true true
+                |> Gen.map ValidArrayWithCoordinate
+            )

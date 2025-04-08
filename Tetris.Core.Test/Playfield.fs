@@ -59,19 +59,9 @@ let ``tryCreate copies the input array`` (Playfield.ValidArray tiles) =
     |> Result.defaultValue false
 
 [<Property>]
-let ``getTile returns the correct tile`` (x: int) (y: int) (tiles: Tile array2d) =
-    let width = Array2D.length2 tiles
-    let height = Array2D.length1 tiles
+let ``getTile returns the correct tile`` (Playfield.ValidArrayWithCoordinate(tiles, x, y)) =
+    let playfield =
+        Playfield.tryCreate tiles
+        |> Result.defaultWith (fun _ -> failwith "Invalid playfield") in
 
-    (x >= 0
-     && x < width - 1
-     && y >= 0
-     && y < height - 1
-     && width >= Playfield.minWidth
-     && height >= Playfield.minHeight)
-    ==> lazy
-        (let playfield =
-            Playfield.tryCreate tiles
-            |> Result.defaultWith (fun _ -> failwith "Invalid playfield") in
-
-         Playfield.getTile x y playfield = tiles[y, x])
+    Playfield.getTile x y playfield <=> tiles[y, x]
