@@ -3,28 +3,11 @@ namespace Tetris.Core.Test.Generator
 open Tetris.Core
 open FsCheck.FSharp
 
-
-module Tile =
-    let tile = Gen.elements [ Tile.Empty; Tile.Occupied ]
-
 module Playfield =
-    let private generateDimension isValid minValue =
-        if isValid then
-            Gen.choose (minValue, minValue * 2)
-        else
-            Gen.choose (0, minValue - 1)
+    let validWidth = Gen.choose (Playfield.minWidth, Playfield.minWidth + 10)
 
-    let tileArray isValidWidth isValidHeight =
-        gen {
-            let! width = generateDimension isValidWidth Playfield.minWidth
-            let! height = generateDimension isValidHeight Playfield.minHeight
-            return! Gen.array2DOfDim height width Tile.tile
-        }
+    let validHeight = Gen.choose (Playfield.minHeight, Playfield.minHeight + 10)
 
-    let tileArrayWithCoordinate isValidWidth isValidHeight =
-        gen {
-            let! tiles = tileArray isValidWidth isValidHeight
-            let! x = Gen.choose (0, Array2D.length2 tiles - 1)
-            let! y = Gen.choose (0, Array2D.length1 tiles - 1)
-            return tiles, x, y
-        }
+    let invalidWidth = Gen.choose (0, Playfield.minWidth - 1)
+
+    let invalidHeight = Gen.choose (0, Playfield.minHeight - 1)

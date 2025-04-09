@@ -27,9 +27,9 @@ type Tetromino =
 module Tetromino =
     type Orientation = Direction
 
-    let private o = Tile.Empty
+    let private o = false
 
-    let private x = Tile.Occupied
+    let private x = true
 
     /// All tetrominoes.
     let all = [ I; J; L; O; S; T; Z ]

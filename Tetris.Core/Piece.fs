@@ -26,8 +26,8 @@ module Piece =
         { piece with
             Position =
                 { piece.Position with
-                    x = piece.Position.x + dx
-                    y = piece.Position.y + dy } }
+                    X = piece.Position.X + dx
+                    Y = piece.Position.Y + dy } }
 
     /// <summary>
     /// Rotates a piece in a given direction.
