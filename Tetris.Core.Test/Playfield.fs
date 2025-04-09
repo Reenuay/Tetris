@@ -6,11 +6,12 @@ open Tetris.Core.Test.Arbitrary
 open FsCheck.Xunit
 open FsCheck.FSharp
 open FsToolkit.ErrorHandling
+open System
 
 
 [<Property>]
 let ``tryCreate fails when tiles is null`` () =
-    lazy Playfield.tryCreate null |> Prop.throws
+    lazy Playfield.tryCreate null |> Prop.throws<ArgumentNullException, _>
 
 [<Property>]
 let ``tryCreate returns error when width is too small`` (Playfield.InvalidWidthArray tiles) =
@@ -60,6 +61,6 @@ let ``tryCreate copies the input array`` (Playfield.ValidArray tiles) =
 let ``getTile returns the correct tile`` (Playfield.ValidArrayWithCoordinate(tiles, x, y)) =
     let playfield =
         Playfield.tryCreate tiles
-        |> Result.defaultWith (fun _ -> failwith "Invalid playfield") in
+        |> Result.defaultWith (fun _ -> failwith "Invalid playfield")
 
     Playfield.getTile x y playfield <=> tiles[y, x]
