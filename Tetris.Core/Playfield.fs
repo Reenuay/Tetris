@@ -2,7 +2,6 @@
 module Tetris.Core.Playfield
 
 open FsToolkit.ErrorHandling
-open FsToolkit.ErrorHandling.Operator.Validation
 
 
 /// <summary>
@@ -43,30 +42,32 @@ let height playfield = playfield.Height
 
 let private validateWidth width =
     if width < minWidth then
-        Error [ WidthTooSmall(minWidth, width) ]
+        Error(WidthTooSmall(minWidth, width))
     else
         Ok width
 
 let private validateHeight height =
     if height < minHeight then
-        Error [ HeightTooSmall(minHeight, height) ]
+        Error(HeightTooSmall(minHeight, height))
     else
         Ok height
 
-let private create tiles width height =
-    { Tiles = tiles
-      Width = width
-      Height = height }
-
 /// <summary>
 /// Tries to create an empty playfield with the given width and height.
-/// Returns an error if the width or height is too small.
 /// </summary>
 /// <param name="width">The width of the playfield.</param>
 /// <param name="height">The height of the playfield.</param>
 /// <returns>A result containing the playfield or an error.</returns>
 let tryCreate width height =
-    create Set.empty <!> validateWidth width <*> validateHeight height
+    validation {
+        let! width = validateWidth width
+        and! height = validateHeight height
+
+        return
+            { Tiles = Set.empty
+              Width = width
+              Height = height }
+    }
 
 /// <summary>
 /// Checks if a piece can be placed at its current position in the playfield.

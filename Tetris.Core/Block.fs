@@ -19,11 +19,11 @@ type BlockCreationError =
 
 let private validateWidth pattern =
     let width = pattern |> Array2D.length2
-    if width < 1 then Error [ ZeroWidth ] else Ok width
+    if width < 1 then Error ZeroWidth else Ok width
 
 let private validateHeight pattern =
     let height = pattern |> Array2D.length1
-    if height < 1 then Error [ ZeroHeight ] else Ok height
+    if height < 1 then Error ZeroHeight else Ok height
 
 /// <summary>
 /// Tries to create a new block from the given pattern.
