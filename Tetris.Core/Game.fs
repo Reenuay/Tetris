@@ -91,7 +91,7 @@ let private tryUpdatePiece f game =
 let private spawnPiece game =
     let initialOrientation = Orientation.Up
     let nextBlock = Tetromino.toBlock initialOrientation game.NextTetromino
-    let size = Block.maxExtent nextBlock
+    let size = Block.extent nextBlock
     let playfieldCenter = Playfield.width game.Playfield / 2
 
     let spawnPosition =

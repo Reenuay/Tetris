@@ -80,7 +80,7 @@ let canPlace piece playfield =
     let pieceTiles =
         piece
         |> Piece.toBlock
-        |> Block.getTiles
+        |> Block.tilePositions
         |> Set.map (Position.add piece.Position)
 
     let isWithinBoundary tile =

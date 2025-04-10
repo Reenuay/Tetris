@@ -7,7 +7,8 @@ open FsToolkit.ErrorHandling
 /// <summary>
 /// Represents a block of tiles.
 /// </summary>
-type Block = private { Tiles: Set<Position> }
+type Block =
+    private { TilePositions: Set<Position> }
 
 /// <summary>
 /// Represents possible errors that can occur when creating a block.
@@ -15,10 +16,6 @@ type Block = private { Tiles: Set<Position> }
 type BlockCreationError =
     | ZeroWidth
     | ZeroHeight
-
-let private failIfNull pattern =
-    if isNull pattern then
-        nullArg "Pattern cannot be null"
 
 let private validateWidth pattern =
     let width = pattern |> Array2D.length2
@@ -39,7 +36,8 @@ let private validateHeight pattern =
 /// </remarks>
 let tryCreate (pattern: bool[,]) =
     validation {
-        do failIfNull pattern
+        if isNull pattern then
+            nullArg (nameof pattern)
 
         let! width = validateWidth pattern
         and! height = validateHeight pattern
@@ -51,16 +49,29 @@ let tryCreate (pattern: bool[,]) =
                            yield { X = x; Y = y } |]
             |> Set.ofArray
 
-        return { Tiles = positions }
+        return { TilePositions = positions }
     }
 
 /// <summary>
-/// Get the maximum coordinate of the block.
+/// Gets the coordinates of the occupied tiles of the block.
 /// </summary>
-/// <param name="block">The block to get the maximum coordinate of.</param>
-/// <returns>The maximum coordinate of the block.</returns>
-let maxExtent block =
-    block.Tiles |> Set.fold (fun m t -> max t.X t.Y |> max m) 0
+/// <param name="block">The block to get the tile positions of.</param>
+/// <returns>The coordinates of the occupied tiles of the block.</returns>
+/// <remarks>
+/// The tile positions are represented as a set of positions.
+/// </remarks>
+let tilePositions block = block.TilePositions
+
+/// <summary>
+/// Gets the length of the side of the smallest square that can contain all tiles in the block.
+/// </summary>
+/// <param name="block">The block to get the extent of.</param>
+/// <returns>The length of the side of the smallest square that can contain all tiles in the block.</returns>
+/// <remarks>
+/// The extent is the maximum of the X and Y coordinates of all tiles in the block.
+/// </remarks>
+let extent block =
+    block.TilePositions |> Set.fold (fun m t -> max t.X t.Y |> max m) 0
 
 /// <summary>
 /// Rotates a block clockwise.
@@ -68,13 +79,10 @@ let maxExtent block =
 /// <param name="block">The block to rotate.</param>
 /// <returns>The rotated block.</returns>
 let rotateClockwise block =
-    let maxExtent = maxExtent block
-    let tiles = block.Tiles |> Set.map (fun t -> { X = maxExtent - t.Y; Y = t.X })
-    { Tiles = tiles }
+    let maxExtent = extent block
 
-/// <summary>
-/// Gets the coordinates of the occupied tiles of the block.
-/// </summary>
-/// <param name="block">The block to get the tiles of.</param>
-/// <returns>The coordinates of the occupied tiles of the block.</returns>
-let getTiles block = block.Tiles
+    { TilePositions =
+        block.TilePositions
+        |> Set.map (fun position ->
+            { X = maxExtent - position.Y
+              Y = position.X }) }
