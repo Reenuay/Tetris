@@ -4,18 +4,17 @@ module Tetris.Core.Test.Playfield
 open Tetris.Core
 open Tetris.Core.Test.Arbitrary
 open FsCheck.Xunit
-open FsToolkit.ErrorHandling
 
 
 [<Property>]
 let ``tryCreate returns error when width is too small`` (Playfield.InvalidWidth width) (Playfield.ValidHeight height) =
     Playfield.tryCreate width height
-    <=> Error [ Playfield.WidthTooSmall(Playfield.minWidth, width) ]
+    <=> Error ![ Playfield.WidthTooSmall(Playfield.minWidth, width) ]
 
 [<Property>]
 let ``tryCreate returns error when height is too small`` (Playfield.ValidWidth width) (Playfield.InvalidHeight height) =
     Playfield.tryCreate width height
-    <=> Error [ Playfield.HeightTooSmall(Playfield.minHeight, height) ]
+    <=> Error ![ Playfield.HeightTooSmall(Playfield.minHeight, height) ]
 
 [<Property>]
 let ``tryCreate returns error when both dimensions are too small``
@@ -24,8 +23,8 @@ let ``tryCreate returns error when both dimensions are too small``
     =
     Playfield.tryCreate width height
     <=> Error
-            [ Playfield.WidthTooSmall(Playfield.minWidth, width)
-              Playfield.HeightTooSmall(Playfield.minHeight, height) ]
+            ![ Playfield.WidthTooSmall(Playfield.minWidth, width)
+               Playfield.HeightTooSmall(Playfield.minHeight, height) ]
 
 [<Property>]
 let ``tryCreate returns ok when both dimensions are valid``

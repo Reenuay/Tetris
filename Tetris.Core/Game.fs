@@ -73,20 +73,20 @@ let currentPiece game = game.CurrentPiece
 /// <returns>The playfield in the game.</returns>
 let playfield game = game.Playfield
 
-// Step helpers
-let private tryUpdatePiece f game =
-    game.CurrentPiece
-    |> Option.bind (fun piece ->
-        let newPiece = f piece
+// // Step helpers
+// let private tryUpdatePiece f game =
+//     game.CurrentPiece
+//     |> Option.bind (fun piece ->
+//         let newPiece = f piece
 
-        if Playfield.canPlace newPiece game.Playfield then
-            Some
-                { game with
-                    CurrentPiece = Some newPiece }
-        else
-            None)
-    |> Option.map (fun game -> game, PieceUpdated)
-    |> Option.defaultValue (game, Unchanged)
+//         if Playfield.validatePlacement newPiece game.Playfield then
+//             Some
+//                 { game with
+//                     CurrentPiece = Some newPiece }
+//         else
+//             None)
+//     |> Option.map (fun game -> game, PieceUpdated)
+//     |> Option.defaultValue (game, Unchanged)
 
 let private spawnPiece game =
     let initialOrientation = Orientation.Up

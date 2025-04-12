@@ -4,7 +4,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-
+    <Compile Include="Common.fs" />
     <Compile Include="Rotation.fs" />
     <Compile Include="Direction.fs" />
     <Compile Include="Position.fs" />
@@ -13,8 +13,5 @@
     <Compile Include="Piece.fs" />
     <Compile Include="Playfield.fs" />
     <Compile Include="Game.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.18.0" />
   </ItemGroup>
 </Project>
