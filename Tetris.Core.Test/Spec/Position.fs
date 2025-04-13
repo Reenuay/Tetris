@@ -11,19 +11,19 @@ let ``add returns position with summed coordinates`` (p1: Position) (p2: Positio
     result <=> { X = p1.X + p2.X; Y = p1.Y + p2.Y }
 
 [<Property>]
-let ``add is commutative`` (p1: Position) (p2: Position) =
+let ``add is commutative: p1 ⊕ p2 = p2 ⊕ p1`` (p1: Position) (p2: Position) =
     Position.add p1 p2 <=> Position.add p2 p1
 
 [<Property>]
-let ``add is associative`` (p1: Position) (p2: Position) (p3: Position) =
+let ``add is associative: p1 ⊕ (p2 ⊕ p3) = (p1 ⊕ p2) ⊕ p3`` (p1: Position) (p2: Position) (p3: Position) =
     Position.add p1 (Position.add p2 p3) <=> Position.add (Position.add p1 p2) p3
 
 [<Property>]
-let ``add with zero position does not change original position`` (p: Position) =
+let ``add has identity element — { X: 0; Y: 0 }`` (p: Position) =
     let zero = { X = 0; Y = 0 }
     Position.add zero p <=> p
 
 [<Property>]
-let ``add with negated position gives zero position`` (p: Position) =
+let ``add is invertable (each Position has it's negative counterpart)`` (p: Position) =
     let negated = { X = -p.X; Y = -p.Y }
     Position.add p negated <=> { X = 0; Y = 0 }
