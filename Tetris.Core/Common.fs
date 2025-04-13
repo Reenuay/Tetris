@@ -9,7 +9,6 @@ module Tetris.Core.Common
 /// <returns>The set.</returns>
 let inline (!) elements = set elements
 
-
 /// <summary>
 /// A validation operator that converts a boolean condition into a Result type.
 /// </summary>

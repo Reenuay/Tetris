@@ -50,7 +50,7 @@ let height playfield = playfield.Height
 /// </summary>
 /// <param name="width">The width of the playfield.</param>
 /// <param name="height">The height of the playfield.</param>
-/// <returns>A result containing the playfield if dimensions are valid, or errors if they are too small.</returns>
+/// <returns>A result containing the playfield if dimensions are valid, or error if they are too small.</returns>
 let tryCreate width height =
     [ width >= minWidth |--> WidthTooSmall(minWidth, width)
       height >= minHeight |--> HeightTooSmall(minHeight, height) ]
@@ -60,7 +60,7 @@ let tryCreate width height =
           Width = width
           Height = height })
 
-let private checkBounds playfield tiles =
+let private checkBounds tiles playfield =
     let isWithinBounds tile =
         tile.X >= 0
         && tile.X < playfield.Width
@@ -69,7 +69,7 @@ let private checkBounds playfield tiles =
 
     tiles |> Set.forall isWithinBounds
 
-let private checkCollisions playfield tiles =
+let private checkCollisions tiles playfield =
     tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty
 
 let private validatePlacement piece playfield =
@@ -79,8 +79,8 @@ let private validatePlacement piece playfield =
         |> Block.tilePositions
         |> Set.map (Position.add piece.Position)
 
-    [ checkBounds playfield tiles |--> OutOfBounds
-      checkCollisions playfield tiles |--> Collision ]
+    [ checkBounds tiles playfield |--> OutOfBounds
+      checkCollisions tiles playfield |--> Collision ]
     |> Result.mergeErrors
     |> Result.map (fun () -> tiles)
 

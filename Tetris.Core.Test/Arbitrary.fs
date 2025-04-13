@@ -5,6 +5,18 @@ open FsCheck.FSharp
 
 
 [<RequireQualifiedAccess>]
+module Common =
+    type NonEmptyListWithAtLeastOneError = NonEmptyListWithAtLeastOneError of Result<unit, int> list
+
+    type Extension =
+        static member NonEmptyListWithAtLeastOneError() =
+            Arb.fromGen (
+                Generator.Result.nonEmptyListWithAtLeastOneError
+                |> Gen.map NonEmptyListWithAtLeastOneError
+            )
+
+
+[<RequireQualifiedAccess>]
 module Playfield =
     /// Represents a valid width for a playfield.
     type ValidWidth = ValidWidth of int
