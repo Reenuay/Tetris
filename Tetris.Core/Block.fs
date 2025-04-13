@@ -28,14 +28,12 @@ let tryCreate (pattern: bool[,]) =
     if isNull pattern then
         nullArg (nameof pattern)
 
-    pattern
-    |> Result.validateAll
-        [ (fun p -> p |> Array2D.length2 < 1) --> ZeroWidth
-          (fun p -> p |> Array2D.length1 < 1) --> ZeroHeight ]
-    |> Result.map (fun pattern ->
-        let width = pattern |> Array2D.length2
-        let height = pattern |> Array2D.length1
+    let width = pattern |> Array2D.length2
+    let height = pattern |> Array2D.length1
 
+    [ width < 1 |--> ZeroWidth; height < 1 |--> ZeroHeight ]
+    |> Result.mergeErrors
+    |> Result.map (fun _ ->
         { TilePositions =
             ![ for y in 0 .. (height - 1) do
                    for x in 0 .. (width - 1) do

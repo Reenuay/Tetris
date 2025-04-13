@@ -50,14 +50,15 @@ let height playfield = playfield.Height
 /// </summary>
 /// <param name="width">The width of the playfield.</param>
 /// <param name="height">The height of the playfield.</param>
-/// <returns>A result containing the playfield or an error.</returns>
+/// <returns>A result containing the playfield if dimensions are valid, or errors if they are too small.</returns>
 let tryCreate width height =
-    { TilePositions = Set.empty
-      Width = width
-      Height = height }
-    |> Result.validateAll
-        [ (fun p -> p.Width >= minWidth) --> WidthTooSmall(minWidth, width)
-          (fun p -> p.Height >= minHeight) --> HeightTooSmall(minHeight, height) ]
+    [ width >= minWidth |--> WidthTooSmall(minWidth, width)
+      height >= minHeight |--> HeightTooSmall(minHeight, height) ]
+    |> Result.mergeErrors
+    |> Result.map (fun () ->
+        { TilePositions = Set.empty
+          Width = width
+          Height = height })
 
 let private checkBounds playfield tiles =
     let isWithinBounds tile =
@@ -72,20 +73,23 @@ let private checkCollisions playfield tiles =
     tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty
 
 let private validatePlacement piece playfield =
-    piece
-    |> Piece.toBlock
-    |> Block.tilePositions
-    |> Set.map (Position.add piece.Position)
-    |> Result.validateAll
-        [ checkBounds playfield --> OutOfBounds
-          checkCollisions playfield --> Collision ]
+    let tiles =
+        piece
+        |> Piece.toBlock
+        |> Block.tilePositions
+        |> Set.map (Position.add piece.Position)
+
+    [ checkBounds playfield tiles |--> OutOfBounds
+      checkCollisions playfield tiles |--> Collision ]
+    |> Result.mergeErrors
+    |> Result.map (fun () -> tiles)
 
 /// <summary>
 /// Checks if a piece can be placed on the playfield.
 /// </summary>
 /// <param name="piece">The piece to check.</param>
 /// <param name="playfield">The playfield to check on.</param>
-/// <returns>An Ok () if the piece can be placed, or an error if it cannot.</returns>
+/// <returns>A result containing unit if the piece can be placed, or an error.</returns>
 let canPlace piece playfield =
     playfield |> validatePlacement piece |> Result.ignore
 
@@ -94,7 +98,7 @@ let canPlace piece playfield =
 /// </summary>
 /// <param name="piece">The piece to place.</param>
 /// <param name="playfield">The playfield to place the piece on.</param>
-/// <returns>An Ok playfield if the piece was placed successfully, or an error if it could not be placed.</returns>
+/// <returns>A result containing the updated playfield or an error.</returns>
 let tryPlace piece playfield =
     playfield
     |> validatePlacement piece

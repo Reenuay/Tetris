@@ -3,36 +3,27 @@ module Tetris.Core.Common
 
 
 /// <summary>
-/// Constantly returns the first argument.
-/// </summary>
-/// <param name="x">The first argument.</param>
-/// <param name="_">The second argument.</param>
-/// <returns>The first argument.</returns>
-let inline always x _ = x
-
-/// <summary>
 /// Convenience prefix operator to create sets.
 /// </summary>
 /// <param name="elements">The elements to add to the set.</param>
 /// <returns>The set.</returns>
 let inline (!) elements = set elements
 
+
 /// <summary>
-/// Convenience infix operator to create validations from predicates.
+/// A validation operator that converts a boolean condition into a Result type.
 /// </summary>
-/// <param name="predicate">The predicate to validate.</param>
-/// <param name="error">The error to return if the predicate fails.</param>
-/// <param name="value">The value to validate.</param>
-/// <returns>A validation.</returns>
 /// <remarks>
-/// Example:
-/// <code>
-/// let validateLength =
-///     (fun s -> String.length s >= 5) --> "Length must be at least 5"
-/// </code>
+/// This operator provides a concise way to perform validation checks and convert them into
+/// the Result type pattern. It's particularly useful in validation pipelines where multiple
+/// conditions need to be checked sequentially.
+///
+/// The operator name |--> visually represents the flow from a condition to a potential error.
 /// </remarks>
-let inline (-->) predicate error value =
-    if predicate value then Ok value else Error ![ error ]
+/// <param name="condition">The boolean condition to check.</param>
+/// <param name="error">The error value to return if the condition is false.</param>
+/// <returns>A result that contains unit if the condition is true, or an error if it's false.</returns>
+let inline (|-->) condition error = if condition then Ok() else Error error
 
 module Result =
     /// <summary>
@@ -43,19 +34,22 @@ module Result =
     let inline ignore result = Result.map ignore result
 
     /// <summary>
-    /// Validates a value against a list of validations.
+    /// Combines multiple validation results into a single result, collecting all errors if present.
     /// </summary>
-    /// <param name="validations">The validations to apply.</param>
-    /// <param name="value">The value to validate.</param>
-    /// <returns>A result that is Ok if all validations pass, or Error with a set of all errors.</returns>
-    let inline validateAll validations value =
-        validations
-        |> Seq.map (fun validate -> validate value)
+    /// <remarks>
+    /// This function is particularly useful when you need to aggregate multiple validation results
+    /// into a single outcome. Instead of failing fast on the first error, it continues processing
+    /// all results to provide a comprehensive set of validation errors.
+    /// </remarks>
+    /// <param name="results">A sequence of Result values to merge.</param>
+    /// <returns>A single Result combining all successes or collecting all errors.</returns>
+    let inline mergeErrors results =
+        results
         |> Seq.fold
-            (fun state current ->
-                match state, current with
-                | Ok _, Ok _ -> current
-                | Ok _, Error e -> Error e
-                | Error e, Ok _ -> Error e
-                | Error e1, Error e2 -> Error(Set.union e1 e2))
-            (Ok value)
+            (fun acc result ->
+                match acc, result with
+                | Ok(), Ok() -> Ok()
+                | Ok(), Error e -> Error ![ e ]
+                | Error e, Ok() -> Error e
+                | Error e1, Error e2 -> Error(Set.add e2 e1))
+            (Ok())
