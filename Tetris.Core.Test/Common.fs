@@ -10,5 +10,5 @@ open FsCheck.FSharp
 /// <param name="left">The first value to compare.</param>
 /// <param name="right">The second value to compare.</param>
 /// <returns>Property that indicates whether the assertion passed or failed.</returns>
-let inline (<=>) left right =
+let inline (===>) left right =
     left = right |> Prop.label (sprintf "%A = %A" left right)
