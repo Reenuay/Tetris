@@ -1,8 +1,6 @@
 namespace Tetris.Core
 
 
-module Orientation = Direction
-
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
 /// - I: Line
@@ -24,8 +22,6 @@ type Tetromino =
 
 [<RequireQualifiedAccess>]
 module Tetromino =
-    type Orientation = Direction
-
     let private o = false
 
     let private x = true
@@ -55,6 +51,9 @@ module Tetromino =
     let private rotateTimes times block =
         [ 1..times ] |> List.fold (fun block _ -> Block.rotateClockwise block) block
 
+    let private allOrientations =
+        [ Orientation.Up; Orientation.Right; Orientation.Down; Orientation.Left ]
+
     // Сache of all possible block representations of all tetrominoes in all orientations.
     let private blockCache =
         [ Tetromino.I, I
@@ -65,7 +64,7 @@ module Tetromino =
           Tetromino.T, T
           Tetromino.Z, Z ]
         |> List.collect (fun (tetrominoType, blockInInitialOrientation) ->
-            Orientation.all
+            allOrientations
             |> List.mapi (fun i orientation ->
                 (tetrominoType, orientation), rotateTimes (i + 1) blockInInitialOrientation))
         |> Map.ofList

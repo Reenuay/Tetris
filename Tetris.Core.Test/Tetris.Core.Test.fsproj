@@ -10,6 +10,7 @@
     <Compile Include="Generator.fs" />
     <Compile Include="Arbitrary.fs" />
     <Compile Include="Spec/Common.fs" />
+    <Compile Include="Spec\Direction.fs" />
     <Compile Include="Spec/Playfield.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

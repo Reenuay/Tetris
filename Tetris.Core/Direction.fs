@@ -19,9 +19,6 @@ type Orientation = Direction
 
 [<RequireQualifiedAccess>]
 module Direction =
-    /// All possible directions in the clockwise order.
-    let all = [ Direction.Up; Direction.Right; Direction.Down; Direction.Left ]
-
     /// <summary>
     /// Rotates direction by the given rotation.
     /// </summary>
@@ -29,12 +26,12 @@ module Direction =
     /// <param name="direction">The current direction.</param>
     /// <returns>The new direction after rotation.</returns>
     let rotate rotation direction =
-        let currentIndex = List.findIndex ((=) direction) all
-        let length = List.length all
-
-        let nextIndex =
-            match rotation with
-            | Rotation.Clockwise -> (currentIndex + 1) % length
-            | Rotation.CounterClockwise -> (currentIndex + 3) % length
-
-        List.item nextIndex all
+        match rotation, direction with
+        | Rotation.Clockwise, Direction.Up -> Direction.Right
+        | Rotation.Clockwise, Direction.Right -> Direction.Down
+        | Rotation.Clockwise, Direction.Down -> Direction.Left
+        | Rotation.Clockwise, Direction.Left -> Direction.Up
+        | Rotation.CounterClockwise, Direction.Up -> Direction.Left
+        | Rotation.CounterClockwise, Direction.Left -> Direction.Down
+        | Rotation.CounterClockwise, Direction.Down -> Direction.Right
+        | Rotation.CounterClockwise, Direction.Right -> Direction.Up

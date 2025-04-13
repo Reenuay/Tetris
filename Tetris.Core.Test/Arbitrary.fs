@@ -1,11 +1,13 @@
 namespace Tetris.Core.Test.Arbitrary
 
+open Tetris.Core
 open Tetris.Core.Test
 open FsCheck.FSharp
 
 
 [<RequireQualifiedAccess>]
 module Common =
+    /// Represents a non-empty list with at least one error case.
     type NonEmptyListWithAtLeastOneError = NonEmptyListWithAtLeastOneError of Result<unit, int> list
 
     type Extension =
@@ -15,6 +17,14 @@ module Common =
                 |> Gen.map NonEmptyListWithAtLeastOneError
             )
 
+[<RequireQualifiedAccess>]
+module Rotation =
+    /// Represents a balanced sequence of rotations that have an equal number of clockwise and counter-clockwise rotations.
+    type BalancedSequence = BalancedSequence of Rotation list
+
+    type Extension =
+        static member BalancedSequence() =
+            Arb.fromGen (Generator.Rotation.balancedRotationSequence |> Gen.map BalancedSequence)
 
 [<RequireQualifiedAccess>]
 module Playfield =

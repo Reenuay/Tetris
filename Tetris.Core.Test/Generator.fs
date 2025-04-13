@@ -18,6 +18,17 @@ module Result =
             return List.insertAt randomIndex randomError list
         }
 
+module Rotation =
+    let balancedRotationSequence =
+        gen {
+            let! n = Gen.choose (1, 10)
+
+            let rotations =
+                List.replicate n Rotation.Clockwise @ List.replicate n Rotation.CounterClockwise
+
+            return! Gen.shuffle rotations |> Gen.map List.ofArray
+        }
+
 module Playfield =
     let validWidth = Gen.choose (Playfield.minWidth, Playfield.minWidth + 10)
 
