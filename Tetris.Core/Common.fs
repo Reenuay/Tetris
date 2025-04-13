@@ -52,3 +52,14 @@ module Result =
                 | Error e, Ok() -> Error e
                 | Error e1, Error e2 -> Error(Set.add e2 e1))
             (Ok())
+
+module Fail =
+    /// <summary>
+    /// Throws an ArgumentNullException if the given argument is null.
+    /// </summary>
+    /// <param name="argName">The name of the argument.</param>
+    /// <param name="arg">The argument to check for null.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the argument is null.</exception>
+    let ifNullArg argName arg =
+        if isNull arg then
+            nullArg argName
