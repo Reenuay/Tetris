@@ -1,6 +1,8 @@
 namespace Tetris.Core
 
 
+type Block = Block.Block
+
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
 /// - I: Line
@@ -30,15 +32,14 @@ module Tetromino =
     let all = [ I; J; L; O; S; T; Z ]
 
     let private createBlockUnsafe tiles =
-        tiles
-        |> Block.tryCreate
-        |> Result.defaultWith (fun _ -> failwith "Invalid block")
+        tiles |> Block.tryCreate |> Result.defaultValue Unchecked.defaultof<Block>
 
     let private I = array2D [ [ x; x; x; x ] ] |> createBlockUnsafe
 
     let private J = array2D [ [ o; x ]; [ o; x ]; [ x; x ] ] |> createBlockUnsafe
 
-    let private L = array2D [ [ x; o ]; [ x; o ]; [ x; x ] ] |> createBlockUnsafe
+    let private L =
+        array2D [ [ o; x; o ]; [ o; x; o ]; [ o; x; x ] ] |> createBlockUnsafe
 
     let private O = array2D [ [ x; x ]; [ x; x ] ] |> createBlockUnsafe
 
