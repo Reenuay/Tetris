@@ -60,6 +60,6 @@ module Fail =
     /// <param name="argName">The name of the argument.</param>
     /// <param name="arg">The argument to check for null.</param>
     /// <exception cref="ArgumentNullException">Thrown if the argument is null.</exception>
-    let ifNullArg argName arg =
+    let inline ifNullArg argName arg =
         if isNull arg then
             nullArg argName
