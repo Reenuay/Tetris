@@ -1,8 +1,6 @@
 namespace Tetris.Core
 
 
-type Block = Block.Block
-
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
 /// - I: Line
@@ -24,6 +22,8 @@ type Tetromino =
 
 [<RequireQualifiedAccess>]
 module Tetromino =
+    type Block = Block.Block
+
     let private o = false
 
     let private x = true
