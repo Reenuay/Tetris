@@ -24,7 +24,7 @@ type BlockCreationError =
 /// <remarks>
 /// The pattern is represented as a 2D array of booleans, where true indicates a tile and false indicates an empty space.
 /// </remarks>
-let tryCreate (pattern: bool[,]) =
+let tryCreate pattern =
     Fail.ifNullArg (nameof pattern) pattern
 
     let width = pattern |> Array2D.length2
