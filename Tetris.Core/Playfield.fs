@@ -52,8 +52,8 @@ let height playfield = playfield.Height
 /// <param name="height">The height of the playfield.</param>
 /// <returns>A result containing the playfield if dimensions are valid, or error if they are too small.</returns>
 let tryCreate width height =
-    [ width >= minWidth |--> WidthTooSmall(minWidth, width)
-      height >= minHeight |--> HeightTooSmall(minHeight, height) ]
+    [ width < minWidth |--> WidthTooSmall(minWidth, width)
+      height < minHeight |--> HeightTooSmall(minHeight, height) ]
     |> Result.mergeErrors
     |> Result.map (fun () ->
         { TilePositions = Set.empty

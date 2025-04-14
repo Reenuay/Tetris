@@ -9,20 +9,21 @@ module Tetris.Core.Common
 /// <returns>The set.</returns>
 let inline (!) elements = set elements
 
+
 /// <summary>
-/// A validation operator that converts a boolean condition into a Result type.
+/// A validation operator that converts a condition into an error when the condition is met.
 /// </summary>
 /// <remarks>
-/// This operator provides a concise way to perform validation checks and convert them into
-/// the Result type pattern. It's particularly useful in validation pipelines where multiple
-/// conditions need to be checked sequentially.
-///
-/// The operator name |--> visually represents the flow from a condition to a potential error.
+/// The operator |--> should be read as "condition leads to error", meaning when the condition
+/// is true, it results in the specified error.
 /// </remarks>
-/// <param name="condition">The boolean condition to check.</param>
-/// <param name="error">The error value to return if the condition is false.</param>
-/// <returns>A result that contains unit if the condition is true, or an error if it's false.</returns>
-let inline (|-->) condition error = if condition then Ok() else Error error
+/// <param name="condition">The condition that triggers the error.</param>
+/// <param name="error">The error to return when the condition is met.</param>
+/// <returns>
+/// Error with the specified error value when the condition is met;
+/// Ok otherwise.
+/// </returns>
+let inline (|-->) condition error = if condition then Error error else Ok()
 
 module Result =
     /// <summary>

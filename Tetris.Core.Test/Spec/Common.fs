@@ -14,10 +14,10 @@ open FsCheck.Xunit
 let ``! operator creates same set as built-in set function`` (xs: int list) = !xs ===> set xs
 
 [<Property>]
-let ``|--> operator returns Ok when condition is true`` (error: string) = true |--> error ===> Ok()
+let ``|--> operator returns Ok when condition is false`` (error: string) = false |--> error ===> Ok()
 
 [<Property>]
-let ``|--> operator returns Error when condition is false`` (error: string) = false |--> error ===> Error error
+let ``|--> operator returns Error when condition is true`` (error: string) = true |--> error ===> Error error
 
 [<Property>]
 let ``Result.ignore converts any Ok value to Ok()`` (x: int) = Ok x |> Result.ignore ===> Ok()
