@@ -60,17 +60,17 @@ let tryCreate width height =
           Width = width
           Height = height })
 
-let private checkBounds tiles playfield =
-    let isWithinBounds tile =
-        tile.X >= 0
-        && tile.X < playfield.Width
-        && tile.Y >= 0
-        && tile.Y < playfield.Height
+let private isOutOfBounds tiles playfield =
+    let isOutOfBounds tile =
+        tile.X < 0
+        && tile.X >= playfield.Width
+        && tile.Y < 0
+        && tile.Y >= playfield.Height
 
-    tiles |> Set.forall isWithinBounds
+    tiles |> Set.exists isOutOfBounds
 
-let private checkCollisions tiles playfield =
-    tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty
+let private hasCollisions tiles playfield =
+    tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty |> not
 
 let private validatePlacement piece playfield =
     let tiles =
@@ -79,8 +79,8 @@ let private validatePlacement piece playfield =
         |> Block.tilePositions
         |> Set.map (Position.add piece.Position)
 
-    [ checkBounds tiles playfield |--> OutOfBounds
-      checkCollisions tiles playfield |--> Collision ]
+    [ isOutOfBounds tiles playfield |--> OutOfBounds
+      hasCollisions tiles playfield |--> Collision ]
     |> Result.mergeErrors
     |> Result.map (fun () -> tiles)
 
