@@ -30,7 +30,7 @@ let tryCreate pattern =
     let width = pattern |> Array2D.length2
     let height = pattern |> Array2D.length1
 
-    [ width < 1 |--> ZeroWidth; height < 1 |--> ZeroHeight ]
+    [ width = 0 |--> ZeroWidth; height = 0 |--> ZeroHeight ]
     |> Result.mergeErrors
     |> Result.map (fun _ ->
         { TilePositions =
