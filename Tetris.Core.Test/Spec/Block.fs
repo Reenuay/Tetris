@@ -55,5 +55,4 @@ let ``tryCreate preserves tile positions`` (Block.NonEmptyPattern pattern) =
     |> Result.map (fun block ->
         let tiles = Block.tilePositions block
         tiles |> Set.forall (fun pos -> pattern[pos.Y, pos.X]))
-    |> Result.defaultValue false
-    ===> true
+    ===> Ok true
