@@ -26,7 +26,7 @@ let ``tryCreate returns Error when pattern height is 0`` (PositiveInt width) =
 
 [<Property>]
 let ``tryCreate returns Error when both dimensions are 0`` () =
-    Array2D.init 0 0 (fun _ _ -> true) |> Block.tryCreate
+    (fun _ _ -> true) |> Array2D.init 0 0 |> Block.tryCreate
     ===> Error ![ Block.ZeroWidth; Block.ZeroHeight ]
 
 [<Property>]
