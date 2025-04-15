@@ -10,12 +10,12 @@ open FsCheck.Xunit
 [<Property>]
 let ``tryCreate returns Error when width is too small`` (Playfield.InvalidWidth width) (Playfield.ValidHeight height) =
     Playfield.tryCreate width height
-    ===> Error ![ Playfield.WidthTooSmall(Playfield.minWidth, width) ]
+    ===> Error ![ Playfield.SmallWidth(Playfield.minWidth, width) ]
 
 [<Property>]
 let ``tryCreate returns Error when height is too small`` (Playfield.ValidWidth width) (Playfield.InvalidHeight height) =
     Playfield.tryCreate width height
-    ===> Error ![ Playfield.HeightTooSmall(Playfield.minHeight, height) ]
+    ===> Error ![ Playfield.SmallHeight(Playfield.minHeight, height) ]
 
 [<Property>]
 let ``tryCreate returns Error when both dimensions are too small``
@@ -24,8 +24,8 @@ let ``tryCreate returns Error when both dimensions are too small``
     =
     Playfield.tryCreate width height
     ===> Error
-        ![ Playfield.WidthTooSmall(Playfield.minWidth, width)
-           Playfield.HeightTooSmall(Playfield.minHeight, height) ]
+        ![ Playfield.SmallWidth(Playfield.minWidth, width)
+           Playfield.SmallHeight(Playfield.minHeight, height) ]
 
 [<Property>]
 let ``tryCreate returns Ok when both dimensions are valid``

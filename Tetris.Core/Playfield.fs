@@ -15,8 +15,8 @@ type Playfield =
 /// Represents the possible errors that can occur during the creation of a playfield.
 /// </summary>
 type PlayfieldCreationError =
-    | WidthTooSmall of minimalWidth: int * actualWidth: int
-    | HeightTooSmall of minimalHeight: int * actualHeight: int
+    | SmallWidth of minimalWidth: int * actualWidth: int
+    | SmallHeight of minimalHeight: int * actualHeight: int
 
 /// <summary>
 /// Represents the possible errors that can occur during the placement of a piece on a playfield.
@@ -52,8 +52,8 @@ let height playfield = playfield.Height
 /// <param name="height">The height of the playfield.</param>
 /// <returns>A result containing the playfield if dimensions are valid, or error if they are too small.</returns>
 let tryCreate width height =
-    [ width < minWidth |--> WidthTooSmall(minWidth, width)
-      height < minHeight |--> HeightTooSmall(minHeight, height) ]
+    [ width < minWidth |--> SmallWidth(minWidth, width)
+      height < minHeight |--> SmallHeight(minHeight, height) ]
     |> Result.mergeErrors
     |> Result.map (fun () ->
         { TilePositions = Set.empty
