@@ -33,7 +33,7 @@ let ``tryCreate returns Ok for valid dimensions`` (PositiveInt width) (PositiveI
     ===> true
 
 [<Property>]
-let ``tryCreate converts only true positions to tiles`` (Block.NonEmptyPattern pattern) =
+let ``tryCreate converts all true values to tiles and skips false ones`` (Block.NonEmptyPattern pattern) =
     let trueCount =
         [ for y in 0 .. Array2D.length1 pattern - 1 do
               for x in 0 .. Array2D.length2 pattern - 1 do
@@ -44,11 +44,11 @@ let ``tryCreate converts only true positions to tiles`` (Block.NonEmptyPattern p
     ===> Ok trueCount
 
 [<Property>]
-let ``tryCreate preserves pattern shape`` (Block.NonEmptyPattern pattern) =
-    let expected =
-        ![ for y in 0 .. Array2D.length1 pattern - 1 do
-               for x in 0 .. Array2D.length2 pattern - 1 do
-                   if pattern[y, x] then
-                       yield { X = x; Y = y } ]
-
-    pattern |> Block.tryCreate |> Result.map Block.tilePositions ===> Ok expected
+let ``tryCreate preserves tile positions`` (Block.NonEmptyPattern pattern) =
+    pattern
+    |> Block.tryCreate
+    |> Result.map (fun block ->
+        let tiles = Block.tilePositions block
+        tiles |> Set.forall (fun pos -> pattern[pos.Y, pos.X]))
+    |> Result.defaultValue false
+    ===> true
