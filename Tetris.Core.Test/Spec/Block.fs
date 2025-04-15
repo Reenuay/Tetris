@@ -33,7 +33,7 @@ let ``tryCreate returns Ok for valid dimensions`` (PositiveInt width) (PositiveI
     ===> true
 
 [<Property>]
-let ``tryCreate creates block with correct number of tiles`` (Block.NonEmptyPattern pattern) =
+let ``tryCreate converts only true positions to tiles`` (Block.NonEmptyPattern pattern) =
     let trueCount =
         [ for y in 0 .. Array2D.length1 pattern - 1 do
               for x in 0 .. Array2D.length2 pattern - 1 do
