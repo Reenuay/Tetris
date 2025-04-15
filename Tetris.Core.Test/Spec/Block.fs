@@ -1,7 +1,9 @@
+[<FsCheck.Xunit.Properties(Arbitrary = [| typeof<Tetris.Core.Test.Arbitrary.Block.Extension> |])>]
 module Tetris.Core.Test.Spec.Block
 
 open Tetris.Core
 open Tetris.Core.Test
+open Tetris.Core.Test.Arbitrary
 open System
 open FsCheck
 open FsCheck.FSharp
@@ -31,20 +33,22 @@ let ``tryCreate returns Ok for valid dimensions`` (PositiveInt width) (PositiveI
     ===> true
 
 [<Property>]
-let ``tryCreate creates empty block for all-false pattern`` (PositiveInt width) (PositiveInt height) =
-    Array2D.init height width (fun _ _ -> false)
-    |> Block.tryCreate
-    |> Result.map Block.tilePositions
-    ===> Ok Set.empty
+let ``tryCreate creates block with correct number of tiles`` (Block.NonEmptyPattern pattern) =
+    let trueCount =
+        [ for y in 0 .. Array2D.length1 pattern - 1 do
+              for x in 0 .. Array2D.length2 pattern - 1 do
+                  if pattern[y, x] then 1 else 0 ]
+        |> List.sum
+
+    pattern |> Block.tryCreate |> Result.map (Block.tilePositions >> Set.count)
+    ===> Ok trueCount
 
 [<Property>]
-let ``tryCreate creates full block for all-true pattern`` (PositiveInt width) (PositiveInt height) =
+let ``tryCreate preserves pattern shape`` (Block.NonEmptyPattern pattern) =
     let expected =
-        ![ for y in 0 .. (height - 1) do
-               for x in 0 .. (width - 1) do
-                   yield { X = x; Y = y } ]
+        ![ for y in 0 .. Array2D.length1 pattern - 1 do
+               for x in 0 .. Array2D.length2 pattern - 1 do
+                   if pattern[y, x] then
+                       yield { X = x; Y = y } ]
 
-    Array2D.init height width (fun _ _ -> true)
-    |> Block.tryCreate
-    |> Result.map Block.tilePositions
-    ===> Ok expected
+    pattern |> Block.tryCreate |> Result.map Block.tilePositions ===> Ok expected

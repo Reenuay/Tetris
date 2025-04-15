@@ -29,6 +29,15 @@ module Rotation =
             return! Gen.shuffle rotations |> Gen.map List.ofArray
         }
 
+module Block =
+    let nonEmptyPattern =
+        gen {
+            let! width = Gen.choose (1, 10)
+            let! height = Gen.choose (1, 10)
+            let! pattern = Gen.array2DOfDim height width (Gen.elements [ true; false ])
+            return pattern
+        }
+
 module Playfield =
     let validWidth = Gen.choose (Playfield.minWidth, Playfield.minWidth + 10)
 

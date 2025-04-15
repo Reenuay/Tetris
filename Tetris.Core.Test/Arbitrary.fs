@@ -27,6 +27,15 @@ module Rotation =
             Arb.fromGen (Generator.Rotation.balancedRotationSequence |> Gen.map BalancedSequence)
 
 [<RequireQualifiedAccess>]
+module Block =
+    /// Represents a non-empty pattern for block creation
+    type NonEmptyPattern = NonEmptyPattern of bool[,]
+
+    type Extension =
+        static member NonEmptyPattern() =
+            Arb.fromGen (Generator.Block.nonEmptyPattern |> Gen.map NonEmptyPattern)
+
+[<RequireQualifiedAccess>]
 module Playfield =
     /// Represents a valid width for a playfield.
     type ValidWidth = ValidWidth of int
