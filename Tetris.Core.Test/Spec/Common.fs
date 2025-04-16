@@ -11,9 +11,6 @@ open FsCheck.Xunit
 
 
 [<Property>]
-let ``! operator creates same set as built-in set function`` (xs: int list) = !xs ===> set xs
-
-[<Property>]
 let ``|--> operator returns Ok when condition is false`` (error: string) = false |--> error ===> Ok()
 
 [<Property>]

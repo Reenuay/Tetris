@@ -38,6 +38,12 @@ module Block =
             return pattern
         }
 
+    let block =
+        gen {
+            let! pattern = nonEmptyPattern
+            return Block.tryCreate pattern |> Result.defaultValue Unchecked.defaultof<_>
+        }
+
 module Playfield =
     let validWidth = Gen.choose (Playfield.minWidth, Playfield.minWidth + 10)
 

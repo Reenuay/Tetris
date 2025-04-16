@@ -28,12 +28,18 @@ module Rotation =
 
 [<RequireQualifiedAccess>]
 module Block =
-    /// Represents a non-empty pattern for block creation
+    /// Represents a non-empty pattern for block creation.
     type NonEmptyPattern = NonEmptyPattern of bool[,]
+
+    /// Represents a block for testing purposes.
+    type Block = Block of Block.Block
 
     type Extension =
         static member NonEmptyPattern() =
             Arb.fromGen (Generator.Block.nonEmptyPattern |> Gen.map NonEmptyPattern)
+
+        static member Block() =
+            Arb.fromGen (Generator.Block.block |> Gen.map Block)
 
 [<RequireQualifiedAccess>]
 module Playfield =

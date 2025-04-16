@@ -25,13 +25,12 @@ let ``rotate follows correct sequence`` (direction: Direction) (rotation: Rotati
     Direction.rotate rotation direction ===> expected
 
 [<Property>]
-let ``rotate n*4 times returns to original direction`` (direction: Direction) (rotation: Rotation) (PositiveInt n) =
-    let rotations = n * 4
+let ``rotate 4n times returns to original direction`` (direction: Direction) (rotation: Rotation) (PositiveInt n) =
+    let rotated =
+        [ 1 .. n * 4 ]
+        |> List.fold (fun acc _ -> Direction.rotate rotation acc) direction
 
-    let rotateNTimes n dir =
-        [ 1..n ] |> List.fold (fun acc _ -> Direction.rotate rotation acc) dir
-
-    rotateNTimes rotations direction ===> direction
+    rotated ===> direction
 
 [<Property>]
 let ``rotate will return original direction with equal number of clockwise and counterclockwise rotations``

@@ -8,8 +8,7 @@ module Tetris.Core.Block
 type Block =
     private
         { Tiles: Set<Position>
-          MaxXCoordinate: int
-          MaxYCoordinate: int }
+          Extent: int }
 
 /// <summary>
 /// Represents possible errors that can occur when creating a block.
@@ -17,9 +16,10 @@ type Block =
 type BlockCreationError =
     | ZeroWidth
     | ZeroHeight
+    | EmptyPattern
 
-let private getMaxCoordinates tiles =
-    tiles |> Set.fold (fun (mX, mY) t -> max mX t.X, max mY t.Y) (0, 0)
+let private calculateExtent tiles =
+    tiles |> Set.fold (fun m t -> max m (max t.X t.Y)) 0
 
 /// <summary>
 /// Tries to create a new block from the given pattern.
@@ -36,20 +36,18 @@ let tryCreate pattern =
     let width = pattern |> Array2D.length2
     let height = pattern |> Array2D.length1
 
+    let tiles =
+        ![ for y in 0 .. (height - 1) do
+               for x in 0 .. (width - 1) do
+                   if pattern[y, x] then
+                       yield { X = x; Y = y } ]
+
     [ width = 0 |--> ZeroWidth; height = 0 |--> ZeroHeight ]
     |> Result.mergeErrors
-    |> Result.map (fun _ ->
-        let tiles =
-            ![ for y in 0 .. (height - 1) do
-                   for x in 0 .. (width - 1) do
-                       if pattern[y, x] then
-                           yield { X = x; Y = y } ]
-
-        let maxX, maxY = getMaxCoordinates tiles
-
+    |> Result.replaceError (Set.isEmpty tiles |--> ![ EmptyPattern ])
+    |> Result.replaceOk
         { Tiles = tiles
-          MaxXCoordinate = maxX
-          MaxYCoordinate = maxY })
+          Extent = calculateExtent tiles }
 
 /// <summary>
 /// Gets the coordinates of the occupied tiles of the block.
@@ -62,24 +60,11 @@ let tryCreate pattern =
 let tiles block = block.Tiles
 
 /// <summary>
-/// Gets the maximum X-coordinate of the block.
+/// Gets the size of the square that contains all the tiles of the block.
 /// </summary>
-/// <param name="block">The block to get the maximum X-coordinate of.</param>
-/// <returns>The maximum X-coordinate of the block.</returns>
-/// <remarks>
-/// The maximum X-coordinate is the farthest right tile of the block.
-/// </remarks>
-let maxXCoordinate block = block.MaxXCoordinate
-
-/// <summary>
-/// Gets the maximum Y-coordinate of the block.
-/// </summary>
-/// <param name="block">The block to get the maximum Y-coordinate of.</param>
-/// <returns>The maximum Y-coordinate of the block.</returns>
-/// <remarks>
-/// The maximum Y-coordinate is the farthest down tile of the block.
-/// </remarks>
-let maxYCoordinate block = block.MaxYCoordinate
+/// <param name="block">The block to get the extent of.</param>
+/// <returns>The size of the square that contains all the tiles of the block.</returns>
+let extent block = block.Extent
 
 /// <summary>
 /// Rotates a block clockwise.
@@ -87,12 +72,12 @@ let maxYCoordinate block = block.MaxYCoordinate
 /// <param name="block">The block to rotate.</param>
 /// <returns>The rotated block.</returns>
 let rotateClockwise block =
-    let maxCoordinate = max block.MaxXCoordinate block.MaxYCoordinate
+    let extent = extent block
 
     let rotatedTilePositions =
         block.Tiles
         |> Set.map (fun position ->
-            { X = maxCoordinate - position.Y
+            { X = extent - position.Y
               Y = position.X })
 
     { block with
