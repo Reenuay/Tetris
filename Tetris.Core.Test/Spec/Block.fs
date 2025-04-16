@@ -45,7 +45,7 @@ let ``tryCreate converts all true values to tiles and skips false ones`` (Block.
                   if pattern[y, x] then 1 else 0 ]
         |> List.sum
 
-    pattern |> Block.tryCreate |> Result.map (Block.tilePositions >> Set.count)
+    pattern |> Block.tryCreate |> Result.map (Block.tiles >> Set.count)
     ===> Ok trueCount
 
 [<Property>]
@@ -53,6 +53,6 @@ let ``tryCreate preserves tile positions`` (Block.NonEmptyPattern pattern) =
     pattern
     |> Block.tryCreate
     |> Result.map (fun block ->
-        let tiles = Block.tilePositions block
+        let tiles = Block.tiles block
         tiles |> Set.forall (fun pos -> pattern[pos.Y, pos.X]))
     ===> Ok true

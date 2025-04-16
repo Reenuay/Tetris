@@ -74,10 +74,7 @@ let private hasCollisions playfield tiles =
 
 let private validatePlacement piece playfield =
     let tiles =
-        piece
-        |> Piece.toBlock
-        |> Block.tilePositions
-        |> Set.map (Position.add piece.Position)
+        piece |> Piece.toBlock |> Block.tiles |> Set.map (Position.add piece.Position)
 
     [ tiles |> isOutOfBounds playfield |--> OutOfBounds
       tiles |> hasCollisions playfield |--> Collision ]
