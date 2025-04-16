@@ -14,4 +14,7 @@
     <Compile Include="Playfield.fs" />
     <Compile Include="Game.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharpPlus" Version="1.7.0" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 namespace Tetris.Core
 
+open System
+
 
 module Orientation = Direction
 
@@ -16,12 +18,13 @@ module Piece =
     /// <param name="piece">The piece to move.</param>
     /// <returns>The moved piece.</returns>
     let move direction piece =
+        // Adding UInt16.MaxValue works as minus 1
         let dx, dy =
             match direction with
-            | Direction.Up -> 0, -1
-            | Direction.Right -> 1, 0
-            | Direction.Down -> 0, 1
-            | Direction.Left -> -1, 0
+            | Direction.Up -> 0us, UInt16.MaxValue
+            | Direction.Right -> 1us, 0us
+            | Direction.Down -> 0us, 1us
+            | Direction.Left -> UInt16.MaxValue, 0us
 
         { piece with
             Position =

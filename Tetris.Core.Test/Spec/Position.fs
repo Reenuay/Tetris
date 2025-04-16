@@ -6,7 +6,7 @@ open FsCheck.FSharp
 open FsCheck.Xunit
 
 
-let zero = { X = 0; Y = 0 }
+let zero = { X = 0us; Y = 0us }
 
 [<Property>]
 let ``add returns position with summed coordinates`` (p1: Position) (p2: Position) =
@@ -24,9 +24,3 @@ let ``add is associative: p1 ⊕ (p2 ⊕ p3) = (p1 ⊕ p2) ⊕ p3`` (p1: Positio
 [<Property>]
 let ``add has identity element — { X: 0; Y: 0 }`` (p: Position) =
     Position.add zero p ===> p .&. (Position.add p zero ===> p)
-
-[<Property>]
-let ``add is invertable (each Position has it's negative counterpart)`` (p: Position) =
-    let negated = { X = -p.X; Y = -p.Y }
-
-    Position.add p negated ===> zero .&. (Position.add negated p ===> zero)

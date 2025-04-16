@@ -4,9 +4,7 @@ module Tetris.Core.Test.Spec.Common
 open Tetris.Core
 open Tetris.Core.Test
 open Tetris.Core.Test.Arbitrary
-open System
 open FsCheck
-open FsCheck.FSharp
 open FsCheck.Xunit
 
 
@@ -37,13 +35,3 @@ let ``Result.mergeErrors preserves all errors`` (Common.NonEmptyListWithAtLeastO
         |> set
 
     results |> Result.mergeErrors ===> Error expectedErrors
-
-[<Property>]
-let ``Fail.ifNullArg throws ArgumentNullException when argument is null`` () =
-    let argName = "arg"
-    Prop.throws<ArgumentNullException, _> (lazy Fail.ifNullArg argName null)
-
-[<Property>]
-let ``Fail.ifNullArg does not throw when argument is not null`` (x: obj) =
-    let argName = "arg"
-    Fail.ifNullArg argName x ===> ()

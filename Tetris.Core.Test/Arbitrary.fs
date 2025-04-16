@@ -28,32 +28,26 @@ module Rotation =
 
 [<RequireQualifiedAccess>]
 module Block =
-    /// Represents a non-empty pattern for block creation.
-    type NonEmptyPattern = NonEmptyPattern of bool[,]
-
     /// Represents a block for testing purposes.
     type Block = Block of Block.Block
 
     type Extension =
-        static member NonEmptyPattern() =
-            Arb.fromGen (Generator.Block.nonEmptyPattern |> Gen.map NonEmptyPattern)
-
         static member Block() =
             Arb.fromGen (Generator.Block.block |> Gen.map Block)
 
 [<RequireQualifiedAccess>]
 module Playfield =
     /// Represents a valid width for a playfield.
-    type ValidWidth = ValidWidth of int
+    type ValidWidth = ValidWidth of uint16
 
     /// Represents a valid height for a playfield.
-    type ValidHeight = ValidHeight of int
+    type ValidHeight = ValidHeight of uint16
 
     /// Represents an invalid width for a playfield.
-    type InvalidWidth = InvalidWidth of int
+    type InvalidWidth = InvalidWidth of uint16
 
     /// Represents an invalid height for a playfield.
-    type InvalidHeight = InvalidHeight of int
+    type InvalidHeight = InvalidHeight of uint16
 
     /// Extension methods for the Arbitrary module.
     type Extension =

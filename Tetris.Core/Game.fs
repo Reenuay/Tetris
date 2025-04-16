@@ -92,11 +92,11 @@ let private spawnPiece game =
     let initialOrientation = Orientation.Up
     let nextBlock = Tetromino.toBlock initialOrientation game.NextTetromino
     let size = Block.extent nextBlock
-    let playfieldCenter = Playfield.width game.Playfield / 2
+    let playfieldCenter = Playfield.width game.Playfield / 2us
 
     let spawnPosition =
-        { X = playfieldCenter - size / 2
-          Y = 0 }
+        { X = playfieldCenter - size / 2us
+          Y = 0us }
 
     let newPiece =
         { Tetromino = game.NextTetromino

@@ -5,7 +5,7 @@ namespace Tetris.Core
 /// Represents the position in a two-dimensional space.
 /// </summary>
 [<Struct>]
-type Position = { X: int; Y: int }
+type Position = { X: uint16; Y: uint16 }
 
 module Position =
     /// <summary>

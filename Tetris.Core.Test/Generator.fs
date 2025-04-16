@@ -1,8 +1,13 @@
 namespace Tetris.Core.Test.Generator
 
 open Tetris.Core
+open FSharpPlus.Data
 open FsCheck.FSharp
 
+
+module Gen =
+    let inline chooseUint16 a b =
+        Gen.choose (int a, int b) |> Gen.map uint16
 
 module Result =
     let nonEmptyListWithAtLeastOneError =
@@ -18,6 +23,14 @@ module Result =
             return List.insertAt randomIndex randomError list
         }
 
+module Position =
+    let position =
+        gen {
+            let! x = Gen.chooseUint16 0us 10us
+            let! y = Gen.chooseUint16 0us 10us
+            return { X = x; Y = y }
+        }
+
 module Rotation =
     let balancedRotationSequence =
         gen {
@@ -30,25 +43,17 @@ module Rotation =
         }
 
 module Block =
-    let nonEmptyPattern =
-        gen {
-            let! width = Gen.choose (1, 10)
-            let! height = Gen.choose (1, 10)
-            let! pattern = Gen.array2DOfDim height width (Gen.elements [ true; false ])
-            return pattern
-        }
-
     let block =
         gen {
-            let! pattern = nonEmptyPattern
-            return Block.tryCreate pattern |> Result.defaultValue Unchecked.defaultof<_>
+            let! tiles = Gen.nonEmptyListOf Position.position |> Gen.map NonEmptySet.ofList
+            return tiles |> Block.create
         }
 
 module Playfield =
-    let validWidth = Gen.choose (Playfield.minWidth, Playfield.minWidth + 10)
+    let validWidth = Gen.chooseUint16 Playfield.minWidth (Playfield.minWidth + 10us)
 
-    let validHeight = Gen.choose (Playfield.minHeight, Playfield.minHeight + 10)
+    let validHeight = Gen.chooseUint16 Playfield.minHeight (Playfield.minHeight + 10us)
 
-    let invalidWidth = Gen.choose (0, Playfield.minWidth - 1)
+    let invalidWidth = Gen.chooseUint16 0us (Playfield.minWidth - 1us)
 
-    let invalidHeight = Gen.choose (0, Playfield.minHeight - 1)
+    let invalidHeight = Gen.chooseUint16 0us (Playfield.minHeight - 1us)

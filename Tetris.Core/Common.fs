@@ -1,6 +1,8 @@
 [<AutoOpen>]
 module Tetris.Core.Common
 
+open FSharpPlus.Data
+
 
 /// <summary>
 /// Convenience prefix operator to create sets.
@@ -8,6 +10,14 @@ module Tetris.Core.Common
 /// <param name="elements">The elements to add to the set.</param>
 /// <returns>The set.</returns>
 let inline (!) elements = set elements
+
+/// <summary>
+/// Convenience prefix operator to create non-empty sets.
+/// </summary>
+/// <param name="elements">The elements to add to the set.</param>
+/// <returns>The set.</returns>
+/// <exception cref="System.ArgumentException">Thrown when the set is empty.</exception>
+let inline (!!) elements = NonEmptySet.ofSeq elements
 
 /// <summary>
 /// A validation operator that converts a condition into an error when the condition is met.
@@ -63,15 +73,3 @@ module Result =
         | _, Ok v -> Ok v
         | Ok(), Error e -> Error e
         | Error e, Error _ -> Error e
-
-
-module Fail =
-    /// <summary>
-    /// Throws an ArgumentNullException if the given argument is null.
-    /// </summary>
-    /// <param name="argName">The name of the argument.</param>
-    /// <param name="arg">The argument to check for null.</param>
-    /// <exception cref="ArgumentNullException">Thrown if the argument is null.</exception>
-    let inline ifNullArg argName arg =
-        if isNull arg then
-            nullArg argName

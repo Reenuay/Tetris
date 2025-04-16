@@ -1,6 +1,8 @@
 [<RequireQualifiedAccess>]
 module Tetris.Core.Playfield
 
+open FSharpPlus.Data
+
 
 /// <summary>
 /// Represents a 2D playfield.
@@ -8,15 +10,15 @@ module Tetris.Core.Playfield
 type Playfield =
     private
         { TilePositions: Set<Position>
-          Width: int
-          Height: int }
+          Width: uint16
+          Height: uint16 }
 
 /// <summary>
 /// Represents the possible errors that can occur during the creation of a playfield.
 /// </summary>
 type PlayfieldCreationError =
-    | SmallWidth of minimalWidth: int * actualWidth: int
-    | SmallHeight of minimalHeight: int * actualHeight: int
+    | SmallWidth of minimalWidth: uint16 * actualWidth: uint16
+    | SmallHeight of minimalHeight: uint16 * actualHeight: uint16
 
 /// <summary>
 /// Represents the possible errors that can occur during the placement of a piece on a playfield.
@@ -26,10 +28,10 @@ type PlacementError =
     | Collision
 
 /// Minimal width of a playfield.
-let minWidth = 10
+let minWidth = 20us
 
 /// Minimal height of a playfield.
-let minHeight = 20
+let minHeight = 20us
 
 /// <summary>
 /// Gets the width of the playfield.
@@ -62,10 +64,7 @@ let tryCreate width height =
 
 let private isOutOfBounds playfield tiles =
     let isOutOfBounds tile =
-        tile.X < 0
-        && tile.X >= playfield.Width
-        && tile.Y < 0
-        && tile.Y >= playfield.Height
+        tile.X >= playfield.Width || tile.Y >= playfield.Height
 
     tiles |> Set.exists isOutOfBounds
 
@@ -74,7 +73,11 @@ let private hasCollisions playfield tiles =
 
 let private validatePlacement piece playfield =
     let tiles =
-        piece |> Piece.toBlock |> Block.tiles |> Set.map (Position.add piece.Position)
+        piece
+        |> Piece.toBlock
+        |> Block.tiles
+        |> NonEmptySet.toSet
+        |> Set.map (Position.add piece.Position)
 
     [ tiles |> isOutOfBounds playfield |--> OutOfBounds
       tiles |> hasCollisions playfield |--> Collision ]

@@ -1,5 +1,7 @@
 namespace Tetris.Core
 
+open FSharpPlus.Data
+
 
 /// <summary>
 /// Represents the tetrominoes that can be used in the game.
@@ -31,23 +33,54 @@ module Tetromino =
     /// All tetrominoes.
     let all = [ I; J; L; O; S; T; Z ]
 
-    let private createBlockUnsafe tiles =
-        tiles |> Block.tryCreate |> Result.defaultValue Unchecked.defaultof<Block>
+    let private I =
+        Block.create
+            !![ { X = 0us; Y = 1us }
+                { X = 1us; Y = 1us }
+                { X = 2us; Y = 1us }
+                { X = 3us; Y = 1us } ]
 
-    let private I = array2D [ [ x; x; x; x ] ] |> createBlockUnsafe
-
-    let private J = array2D [ [ o; x ]; [ o; x ]; [ x; x ] ] |> createBlockUnsafe
+    let private J =
+        Block.create
+            !![ { X = 1us; Y = 0us }
+                { X = 1us; Y = 1us }
+                { X = 1us; Y = 2us }
+                { X = 0us; Y = 2us } ]
 
     let private L =
-        array2D [ [ o; x; o ]; [ o; x; o ]; [ o; x; x ] ] |> createBlockUnsafe
+        Block.create
+            !![ { X = 0us; Y = 0us }
+                { X = 0us; Y = 1us }
+                { X = 0us; Y = 2us }
+                { X = 1us; Y = 2us } ]
 
-    let private O = array2D [ [ x; x ]; [ x; x ] ] |> createBlockUnsafe
+    let private O =
+        Block.create
+            !![ { X = 0us; Y = 0us }
+                { X = 1us; Y = 0us }
+                { X = 0us; Y = 1us }
+                { X = 1us; Y = 1us } ]
 
-    let private S = array2D [ [ o; x; x ]; [ x; x; o ] ] |> createBlockUnsafe
+    let private S =
+        Block.create
+            !![ { X = 1us; Y = 0us }
+                { X = 2us; Y = 0us }
+                { X = 0us; Y = 1us }
+                { X = 1us; Y = 1us } ]
 
-    let private T = array2D [ [ o; x; o ]; [ x; x; x ] ] |> createBlockUnsafe
+    let private T =
+        Block.create
+            !![ { X = 0us; Y = 1us }
+                { X = 1us; Y = 1us }
+                { X = 2us; Y = 1us }
+                { X = 1us; Y = 0us } ]
 
-    let private Z = array2D [ [ x; x; o ]; [ o; x; x ] ] |> createBlockUnsafe
+    let private Z =
+        Block.create
+            !![ { X = 0us; Y = 0us }
+                { X = 1us; Y = 0us }
+                { X = 1us; Y = 1us }
+                { X = 2us; Y = 1us } ]
 
     let private rotateTimes times block =
         [ 1..times ] |> List.fold (fun block _ -> Block.rotateClockwise block) block
