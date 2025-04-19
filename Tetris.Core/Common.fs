@@ -20,8 +20,15 @@ let inline (!) elements = set elements
 let inline (!!) elements = NonEmptySet.ofSeq elements
 
 module Error =
+    /// Ok ()
     let nothing = Ok()
 
+    /// <summary>
+    /// Combines two errors.
+    /// </summary>
+    /// <param name="result1">The first result.</param>
+    /// <param name="result2">The second result.</param>
+    /// <returns>The combined result.</returns>
     let collect result1 result2 =
         match result1, result2 with
         | Ok(), Ok() -> Ok()
@@ -29,5 +36,11 @@ module Error =
         | Error e, Ok() -> Error e
         | Error e1, Error e2 -> Error(NonEmptySet.union e1 e2)
 
-let inline (|-->) condition failure =
-    if condition then Error !![ failure ] else Ok()
+/// <summary>
+/// A convenience operator to create an error if a condition is true.
+/// </summary>
+/// <param name="condition">The condition to check.</param>
+/// <param name="error">The error to create.</param>
+/// <returns>Ok () if the condition is false, otherwise an error.</returns>
+let inline (|-->) condition error =
+    if condition then Error !![ error ] else Ok()
