@@ -42,11 +42,6 @@ module Result =
     /// <returns>A result with unit as the Ok value.</returns>
     let inline ignore result = Result.map ignore result
 
-    let replaceOk newValue result =
-        match result with
-        | Ok _ -> Ok newValue
-        | Error e -> Error e
-
     /// <summary>
     /// Combines multiple validation results into a single result, collecting all errors if present.
     /// </summary>
@@ -67,9 +62,3 @@ module Result =
                 | Error e, Ok() -> Error e
                 | Error e1, Error e2 -> Error(Set.add e2 e1))
             (Ok())
-
-    let inline replaceError sourceResult targetResult =
-        match sourceResult, targetResult with
-        | _, Ok v -> Ok v
-        | Ok(), Error e -> Error e
-        | Error e, Error _ -> Error e
