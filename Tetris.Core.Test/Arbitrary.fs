@@ -6,18 +6,6 @@ open FsCheck.FSharp
 
 
 [<RequireQualifiedAccess>]
-module Common =
-    /// Represents a non-empty list with at least one error case.
-    type NonEmptyListWithAtLeastOneError = NonEmptyListWithAtLeastOneError of Result<unit, int> list
-
-    type Extension =
-        static member NonEmptyListWithAtLeastOneError() =
-            Arb.fromGen (
-                Generator.Result.nonEmptyListWithAtLeastOneError
-                |> Gen.map NonEmptyListWithAtLeastOneError
-            )
-
-[<RequireQualifiedAccess>]
 module Rotation =
     /// Represents a balanced sequence of rotations that have an equal number of clockwise and counter-clockwise rotations.
     type BalancedSequence = BalancedSequence of Rotation list

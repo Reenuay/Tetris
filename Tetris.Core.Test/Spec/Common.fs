@@ -1,37 +1,38 @@
-[<FsCheck.Xunit.Properties(Arbitrary = [| typeof<Tetris.Core.Test.Arbitrary.Common.Extension> |])>]
 module Tetris.Core.Test.Spec.Common
 
 open Tetris.Core
 open Tetris.Core.Test
-open Tetris.Core.Test.Arbitrary
-open FsCheck
 open FsCheck.Xunit
 
 
 [<Property>]
-let ``|--> operator returns Ok when condition is false`` (error: string) = false |--> error ===> Ok()
+let ``Failure.collect returns Nothing if both are Nothing`` () =
+    Failure.collect Nothing Nothing ===> Nothing
 
 [<Property>]
-let ``|--> operator returns Error when condition is true`` (error: string) = true |--> error ===> Error error
+let ``Failure.collect returns Failure if left is Failure`` (failure: string) =
+    Failure.collect (Failure !![ failure ]) Nothing ===> Failure !![ failure ]
 
 [<Property>]
-let ``Result.ignore converts any Ok value to Ok()`` (x: int) = Ok x |> Result.ignore ===> Ok()
+let ``Failure.collect returns Failure if right is Failure`` (failure: string) =
+    Failure.collect Nothing (Failure !![ failure ]) ===> Failure !![ failure ]
 
 [<Property>]
-let ``Result.mergeErrors returns Ok for empty list`` () =
-    List.empty |> Result.mergeErrors ===> Ok()
+let ``Failure.collect returns Failure if both are Failure`` (failure1: string) (failure2: string) =
+    Failure.collect (Failure !![ failure1 ]) (Failure !![ failure2 ])
+    ===> Failure !![ failure1; failure2 ]
 
 [<Property>]
-let ``Result.mergeErrors returns Ok when all results are Ok`` (PositiveInt count) =
-    Ok() |> List.replicate count |> Result.mergeErrors ===> Ok()
+let ``Failure.toResult returns Result.Error when Failure`` (failure: string) =
+    Failure !![ failure ] |> Failure.toResult () ===> Error !![ failure ]
 
 [<Property>]
-let ``Result.mergeErrors preserves all errors`` (Common.NonEmptyListWithAtLeastOneError results) =
-    let expectedErrors =
-        results
-        |> List.choose (function
-            | Ok() -> None
-            | Error e -> Some e)
-        |> set
+let ``Failure.toResult returns Result.Ok with provided value when Nothing`` (value: int) =
+    Nothing |> Failure.toResult value ===> Ok value
 
-    results |> Result.mergeErrors ===> Error expectedErrors
+[<Property>]
+let ``|--> operator returns Nothing when condition is false`` (failure: string) = false |--> failure ===> Nothing
+
+[<Property>]
+let ``|--> operator returns Failure when condition is true`` (failure: string) =
+    true |--> failure ===> Failure !![ failure ]

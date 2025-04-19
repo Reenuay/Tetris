@@ -20,45 +20,27 @@ let inline (!) elements = set elements
 let inline (!!) elements = NonEmptySet.ofSeq elements
 
 /// <summary>
-/// A validation operator that converts a condition into an error when the condition is met.
+/// Represents a failure that may occur during validation.
 /// </summary>
-/// <remarks>
-/// The operator |--> should be read as "condition leads to error", meaning when the condition
-/// is true, it results in the specified error.
-/// </remarks>
-/// <param name="condition">The condition that triggers the error.</param>
-/// <param name="error">The error to return when the condition is met.</param>
-/// <returns>
-/// Error with the specified error value when the condition is met;
-/// Ok otherwise.
-/// </returns>
-let inline (|-->) condition error = if condition then Error error else Ok()
+/// <typeparam name="e">The type of the failure.</typeparam>
+type Failure<'e when 'e: comparison> =
+    | Nothing
+    | Failure of NonEmptySet<'e>
 
-module Result =
-    /// <summary>
-    /// Ignores the Ok value of a result.
-    /// </summary>
-    /// <param name="result">The result to ignore.</param>
-    /// <returns>A result with unit as the Ok value.</returns>
-    let inline ignore result = Result.map ignore result
+module Failure =
+    let nothing = Nothing
 
-    /// <summary>
-    /// Combines multiple validation results into a single result, collecting all errors if present.
-    /// </summary>
-    /// <remarks>
-    /// This function is particularly useful when you need to aggregate multiple validation results
-    /// into a single outcome. Instead of failing fast on the first error, it continues processing
-    /// all results to provide a comprehensive set of validation errors.
-    /// </remarks>
-    /// <param name="results">A sequence of Result values to merge.</param>
-    /// <returns>A single Result combining all successes or collecting all errors.</returns>
-    let inline mergeErrors results =
-        results
-        |> Seq.fold
-            (fun acc result ->
-                match acc, result with
-                | Ok(), Ok() -> Ok()
-                | Ok(), Error e -> Error ![ e ]
-                | Error e, Ok() -> Error e
-                | Error e1, Error e2 -> Error(Set.add e2 e1))
-            (Ok())
+    let collect failure1 failure2 =
+        match failure1, failure2 with
+        | Nothing, Nothing -> Nothing
+        | Nothing, Failure e -> Failure e
+        | Failure e, Nothing -> Failure e
+        | Failure e1, Failure e2 -> Failure(NonEmptySet.union e1 e2)
+
+    let toResult v failure =
+        match failure with
+        | Nothing -> Ok v
+        | Failure e -> Error e
+
+let inline (|-->) condition failure =
+    if condition then Failure !![ failure ] else Nothing

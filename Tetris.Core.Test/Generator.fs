@@ -9,20 +9,6 @@ module Gen =
     let inline chooseUint16 a b =
         Gen.choose (int a, int b) |> Gen.map uint16
 
-module Result =
-    let nonEmptyListWithAtLeastOneError =
-        gen {
-            let ok = Gen.constant (Ok())
-            let error = Gen.choose (0, 10) |> Gen.map Error
-
-            let! listLength = Gen.choose (0, 10)
-            let! list = Gen.listOfLength listLength (Gen.oneof [ ok; error ])
-            let! randomIndex = Gen.choose (0, listLength)
-            let! randomError = error
-
-            return List.insertAt randomIndex randomError list
-        }
-
 module Position =
     let position =
         gen {

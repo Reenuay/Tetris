@@ -54,13 +54,13 @@ let height playfield = playfield.Height
 /// <param name="height">The height of the playfield.</param>
 /// <returns>A result containing the playfield if dimensions are valid, or error if they are too small.</returns>
 let tryCreate width height =
-    [ width < minWidth |--> SmallWidth(minWidth, width)
-      height < minHeight |--> SmallHeight(minHeight, height) ]
-    |> Result.mergeErrors
-    |> Result.map (fun () ->
+    Failure.nothing
+    |> Failure.collect (width < minWidth |--> SmallWidth(minWidth, width))
+    |> Failure.collect (height < minHeight |--> SmallHeight(minHeight, height))
+    |> Failure.toResult
         { TilePositions = Set.empty
           Width = width
-          Height = height })
+          Height = height }
 
 let private isOutOfBounds playfield tiles =
     let isOutOfBounds tile =
@@ -79,10 +79,10 @@ let private validatePlacement piece playfield =
         |> NonEmptySet.toSet
         |> Set.map (Position.add piece.Position)
 
-    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
-      tiles |> hasCollisions playfield |--> Collision ]
-    |> Result.mergeErrors
-    |> Result.map (fun () -> tiles)
+    Failure.nothing
+    |> Failure.collect (tiles |> isOutOfBounds playfield |--> OutOfBounds)
+    |> Failure.collect (tiles |> hasCollisions playfield |--> Collision)
+    |> Failure.toResult tiles
 
 /// <summary>
 /// Checks if a piece can be placed on the playfield.
@@ -91,7 +91,7 @@ let private validatePlacement piece playfield =
 /// <param name="playfield">The playfield to check on.</param>
 /// <returns>A result containing unit if the piece can be placed, or an error.</returns>
 let canPlace piece playfield =
-    playfield |> validatePlacement piece |> Result.ignore
+    playfield |> validatePlacement piece |> Result.map (fun _ -> ())
 
 /// <summary>
 /// Tries to place a piece on the playfield.
