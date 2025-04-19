@@ -6,33 +6,24 @@ open FsCheck.Xunit
 
 
 [<Property>]
-let ``Failure.collect returns Nothing if both are Nothing`` () =
-    Failure.collect Nothing Nothing ===> Nothing
+let ``Error.nothing returns Ok if both are Ok `` () =
+    Error.collect Error.nothing Error.nothing ===> Error.nothing
 
 [<Property>]
-let ``Failure.collect returns Failure if left is Failure`` (failure: string) =
-    Failure.collect (Failure !![ failure ]) Nothing ===> Failure !![ failure ]
+let ``Error.collect returns Error if left is Error`` (error: string) =
+    Error.collect (Error !![ error ]) Error.nothing ===> Error !![ error ]
 
 [<Property>]
-let ``Failure.collect returns Failure if right is Failure`` (failure: string) =
-    Failure.collect Nothing (Failure !![ failure ]) ===> Failure !![ failure ]
+let ``Error.collect returns Error if right is Error`` (error: string) =
+    Error.collect Error.nothing (Error !![ error ]) ===> Error !![ error ]
 
 [<Property>]
-let ``Failure.collect returns Failure if both are Failure`` (failure1: string) (failure2: string) =
-    Failure.collect (Failure !![ failure1 ]) (Failure !![ failure2 ])
-    ===> Failure !![ failure1; failure2 ]
+let ``Error.collect returns Error if both are Error`` (error1: string) (error2: string) =
+    Error.collect (Error !![ error1 ]) (Error !![ error2 ])
+    ===> Error !![ error1; error2 ]
 
 [<Property>]
-let ``Failure.toResult returns Result.Error when Failure`` (failure: string) =
-    Failure !![ failure ] |> Failure.toResult () ===> Error !![ failure ]
+let ``|--> operator returns Ok when condition is false`` (error: string) = false |--> error ===> Ok()
 
 [<Property>]
-let ``Failure.toResult returns Result.Ok with provided value when Nothing`` (value: int) =
-    Nothing |> Failure.toResult value ===> Ok value
-
-[<Property>]
-let ``|--> operator returns Nothing when condition is false`` (failure: string) = false |--> failure ===> Nothing
-
-[<Property>]
-let ``|--> operator returns Failure when condition is true`` (failure: string) =
-    true |--> failure ===> Failure !![ failure ]
+let ``|--> operator returns Error when condition is true`` (error: string) = true |--> error ===> Error !![ error ]
