@@ -20,9 +20,6 @@ let inline (!) elements = set elements
 let inline (!!) elements = NonEmptySet.ofSeq elements
 
 module Error =
-    /// Ok ()
-    let nothing = Ok()
-
     /// <summary>
     /// Combines two errors.
     /// </summary>

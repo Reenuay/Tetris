@@ -6,16 +6,15 @@ open FsCheck.Xunit
 
 
 [<Property>]
-let ``Error.nothing returns Ok if both are Ok `` () =
-    Error.collect Error.nothing Error.nothing ===> Error.nothing
+let ``Error.nothing returns Ok if both are Ok `` () = Error.collect (Ok()) (Ok()) ===> Ok()
 
 [<Property>]
 let ``Error.collect returns Error if left is Error`` (error: string) =
-    Error.collect (Error !![ error ]) Error.nothing ===> Error !![ error ]
+    Error.collect (Error !![ error ]) (Ok()) ===> Error !![ error ]
 
 [<Property>]
 let ``Error.collect returns Error if right is Error`` (error: string) =
-    Error.collect Error.nothing (Error !![ error ]) ===> Error !![ error ]
+    Error.collect (Ok()) (Error !![ error ]) ===> Error !![ error ]
 
 [<Property>]
 let ``Error.collect returns Error if both are Error`` (error1: string) (error2: string) =
