@@ -8,19 +8,16 @@ open FsCheck
 open FsCheck.Xunit
 
 
-let rotationSequence =
-    [ Direction.Up; Direction.Right; Direction.Down; Direction.Left ]
-
 [<Property>]
 let ``rotate follows correct sequence`` (direction: Direction) (rotation: Rotation) =
-    let currentIndex = rotationSequence |> List.findIndex ((=) direction)
+    let currentIndex = Direction.all |> List.findIndex ((=) direction)
 
     let nextIndex =
         match rotation with
         | Rotation.Clockwise -> (currentIndex + 1) % 4
         | Rotation.CounterClockwise -> (currentIndex + 3) % 4
 
-    let expected = List.item nextIndex rotationSequence
+    let expected = List.item nextIndex Direction.all
 
     Direction.rotate rotation direction ===> expected
 

@@ -28,12 +28,18 @@ module Rotation =
             return! Gen.shuffle rotations |> Gen.map List.ofArray
         }
 
+module Direction =
+    let direction = Gen.elements Direction.all
+
 module Block =
     let block =
         gen {
             let! tiles = Gen.nonEmptyListOf Position.position |> Gen.map NonEmptySet.ofList
             return tiles |> Block.create
         }
+
+module Tetromino =
+    let tetromino = Gen.elements Tetromino.all
 
 module Playfield =
     let validWidth = Gen.chooseUint16 Playfield.minWidth (Playfield.minWidth + 10us)
@@ -43,3 +49,10 @@ module Playfield =
     let invalidWidth = Gen.chooseUint16 0us (Playfield.minWidth - 1us)
 
     let invalidHeight = Gen.chooseUint16 0us (Playfield.minHeight - 1us)
+
+    let playfield =
+        gen {
+            let! width = validWidth
+            let! height = validHeight
+            return Playfield.tryCreate width height |> Result.defaultValue Unchecked.defaultof<_>
+        }

@@ -19,6 +19,9 @@ type Orientation = Direction
 
 [<RequireQualifiedAccess>]
 module Direction =
+    /// All directions in clockwise order starting from `Direction.Up`.
+    let all = [ Direction.Up; Direction.Right; Direction.Down; Direction.Left ]
+
     /// <summary>
     /// Rotates direction by the given rotation.
     /// </summary>

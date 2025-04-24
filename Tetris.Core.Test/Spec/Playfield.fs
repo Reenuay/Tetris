@@ -32,4 +32,4 @@ let ``tryCreate returns Ok when both dimensions are valid``
     (Playfield.ValidWidth width)
     (Playfield.ValidHeight height)
     =
-    Playfield.tryCreate width height |> Result.isOk ===> true
+    Playfield.tryCreate width height |> Result.isOk
