@@ -24,6 +24,8 @@ type Tetromino =
 
 [<RequireQualifiedAccess>]
 module Tetromino =
+    module Orientation = Direction
+
     type Block = Block.Block
 
     let private o = false
@@ -85,9 +87,6 @@ module Tetromino =
     let private rotateTimes times block =
         [ 1..times ] |> List.fold (fun block _ -> Block.rotateClockwise block) block
 
-    let private allOrientations =
-        [ Orientation.Up; Orientation.Right; Orientation.Down; Orientation.Left ]
-
     // Сache of all possible block representations of all tetrominoes in all orientations.
     let private blockCache =
         [ Tetromino.I, I
@@ -98,7 +97,7 @@ module Tetromino =
           Tetromino.T, T
           Tetromino.Z, Z ]
         |> List.collect (fun (tetrominoType, blockInInitialOrientation) ->
-            allOrientations
+            Orientation.all
             |> List.mapi (fun i orientation ->
                 (tetrominoType, orientation), rotateTimes (i + 1) blockInInitialOrientation))
         |> Map.ofList
