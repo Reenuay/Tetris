@@ -10,7 +10,7 @@ open FSharpPlus.Data
 type Block =
     private
         { Tiles: NonEmptySet<Position>
-          Extent: uint16 }
+          Extent: uint16 } // The size of the square that contains all the tiles of the block.
 
 let private calculateExtent tiles =
     tiles |> NonEmptySet.fold (fun m t -> max m (max t.X t.Y)) 0us

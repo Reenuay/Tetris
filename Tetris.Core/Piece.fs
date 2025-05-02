@@ -52,7 +52,7 @@ module Piece =
     /// The tiles are returned as a set of positions relative to the piece's position.
     /// </remarks>
     let tiles piece =
-        Tetromino.toBlock piece.Orientation piece.Tetromino
+        piece.Tetromino
+        |> Tetromino.toBlock piece.Orientation
         |> Block.tiles
-        |> NonEmptySet.toSet
-        |> Set.map (Position.add piece.Position)
+        |> NonEmptySet.map (Position.add piece.Position)

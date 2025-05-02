@@ -8,7 +8,7 @@ open FSharpPlus.Data
 /// Represents a 2D board with filled tiles and fixed boundaries.
 /// </summary>
 type private Board =
-    { TilePositions: Set<Position>
+    { Tiles: Set<Position>
       Width: uint16
       Height: uint16 }
 
@@ -30,11 +30,9 @@ type PlayfieldCreationError =
     | SmallHeight of minimalHeight: uint16 * actualHeight: uint16
 
 /// <summary>
-/// Represents the possible errors that can occur during the placement of a piece on a playfield.
+/// Represents the possible errors that can occur during the spawning of a piece on a playfield.
 /// </summary>
-type PlacementError =
-    | OutOfBounds
-    | Collision
+type SpawnError = Collision
 
 /// Minimal width of a playfield.
 let minWidth = 20us
@@ -52,19 +50,26 @@ let tryCreate width height =
     [ width < minWidth |--> SmallWidth(minWidth, width)
       height < minHeight |--> SmallHeight(minHeight, height) ]
     |> List.reduce Error.collect
-    |> Result.map (fun _ ->
-        Frozen
-            { TilePositions = Set.empty
+    |>? Frozen
+            { Tiles = Set.empty
               Width = width
-              Height = height })
+              Height = height }
+
+let private hasCollision board piece =
+    piece
+    |> Piece.tiles
+    |> NonEmptySet.toSet
+    |> Set.intersect board.Tiles
+    |> Set.isEmpty
+    |> not
 
 /// <summary>
-/// Places a tetromino piece on the playfield.
+/// Tries to spawn a tetromino piece on the playfield.
 /// </summary>
-/// <param name="tetromino">The tetromino to place.</param>
-/// <param name="frozenPlayfield">The frozen playfield to place the piece on.</param>
-/// <returns>A live playfield with the piece placed on it.</returns>
-let spawn tetromino frozenPlayfield =
+/// <param name="tetromino">The tetromino to spawn.</param>
+/// <param name="frozenPlayfield">The frozen playfield to spawn the piece on.</param>
+/// <returns>A result containing the live playfield if the spawn is successful, or an error if it collides with existing tiles.</returns>
+let trySpawn tetromino frozenPlayfield =
     match frozenPlayfield with
     | Frozen board ->
         let blockExtent = tetromino |> Tetromino.toBlock Orientation.Up |> Block.extent
@@ -78,4 +83,4 @@ let spawn tetromino frozenPlayfield =
               Orientation = Orientation.Up
               Position = spawnPosition }
 
-        Live(board, piece)
+        hasCollision board piece |--> Collision |>? Live(board, piece)

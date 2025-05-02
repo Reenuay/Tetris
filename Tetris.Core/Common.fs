@@ -41,3 +41,11 @@ module Error =
 /// <returns>Ok () if the condition is false, otherwise an error.</returns>
 let inline (|-->) condition error =
     if condition then Error !![ error ] else Ok()
+
+/// <summary>
+/// A convenience operator to replace the value of validator with the given value if the result is Ok().abs
+/// </summary>
+/// <param name="result">The result to check.</param>
+/// <param name="value">The value to replace the result with.</param>
+/// <returns>The result if it is Ok(), otherwise the value.</returns>
+let inline (|>?) result value = result |> Result.map (fun () -> value)
