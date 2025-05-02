@@ -5,7 +5,7 @@ open FSharpPlus.Data
 
 
 /// <summary>
-/// Represents a block of tiles.
+/// Represents a block of tiles regardless of the playfield they are on.
 /// </summary>
 type Block =
     private

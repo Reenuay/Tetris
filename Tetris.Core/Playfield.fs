@@ -71,19 +71,6 @@ let private isOutOfBounds playfield tiles =
 let private hasCollisions playfield tiles =
     tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty |> not
 
-let private validatePlacement piece playfield =
-    let tiles =
-        piece
-        |> Piece.toBlock
-        |> Block.tiles
-        |> NonEmptySet.toSet
-        |> Set.map (Position.add piece.Position)
-
-    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
-      tiles |> hasCollisions playfield |--> Collision ]
-    |> List.reduce Error.collect
-    |> Result.map (fun _ -> tiles)
-
 /// <summary>
 /// Checks if a piece can be placed on the playfield.
 /// </summary>
@@ -91,7 +78,11 @@ let private validatePlacement piece playfield =
 /// <param name="playfield">The playfield to check on.</param>
 /// <returns>A result containing unit if the piece can be placed, or an error.</returns>
 let canPlace piece playfield =
-    playfield |> validatePlacement piece |> Result.map (fun _ -> ())
+    let tiles = piece |> Piece.tiles
+
+    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
+      tiles |> hasCollisions playfield |--> Collision ]
+    |> List.reduce Error.collect
 
 /// <summary>
 /// Tries to place a piece on the playfield.
@@ -100,8 +91,11 @@ let canPlace piece playfield =
 /// <param name="playfield">The playfield to place the piece on.</param>
 /// <returns>A result containing the updated playfield or an error.</returns>
 let tryPlace piece playfield =
-    playfield
-    |> validatePlacement piece
-    |> Result.map (fun tiles ->
+    let tiles = piece |> Piece.tiles
+
+    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
+      tiles |> hasCollisions playfield |--> Collision ]
+    |> List.reduce Error.collect
+    |> Result.map (fun _ ->
         { playfield with
             TilePositions = playfield.TilePositions |> Set.union tiles })

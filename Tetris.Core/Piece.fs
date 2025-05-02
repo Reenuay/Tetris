@@ -1,6 +1,7 @@
 namespace Tetris.Core
 
 open System
+open FSharpPlus.Data
 
 
 module Orientation = Direction
@@ -43,9 +44,15 @@ module Piece =
             Orientation = Orientation.rotate direction piece.Orientation }
 
     /// <summary>
-    /// Converts a piece to a block.
+    /// Returns the tiles that make up a piece.
     /// </summary>
-    /// <param name="piece">The piece to convert.</param>
-    /// <returns>The block representation of the piece.</returns>
-    let toBlock piece =
+    /// <param name="piece">The piece to get the tiles for.</param>
+    /// <returns>The tiles that make up the piece.</returns>
+    /// <remarks>
+    /// The tiles are returned as a set of positions relative to the piece's position.
+    /// </remarks>
+    let tiles piece =
         Tetromino.toBlock piece.Orientation piece.Tetromino
+        |> Block.tiles
+        |> NonEmptySet.toSet
+        |> Set.map (Position.add piece.Position)
