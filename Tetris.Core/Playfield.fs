@@ -5,13 +5,22 @@ open FSharpPlus.Data
 
 
 /// <summary>
-/// Represents a 2D playfield.
+/// Represents a 2D board with filled tiles and fixed boundaries.
 /// </summary>
-type Playfield =
-    private
-        { TilePositions: Set<Position>
-          Width: uint16
-          Height: uint16 }
+type private Board =
+    { TilePositions: Set<Position>
+      Width: uint16
+      Height: uint16 }
+
+/// <summary>
+/// Represents a frozen playfield that awaits a new piece to be spawned.
+/// </summary>
+type Frozen = private Frozen of Board
+
+/// <summary>
+/// Represents a live playfield with a piece on it that can be moved or rotated.
+/// </summary>
+type Live = private Live of Board * Piece
 
 /// <summary>
 /// Represents the possible errors that can occur during the creation of a playfield.
@@ -34,20 +43,6 @@ let minWidth = 20us
 let minHeight = 20us
 
 /// <summary>
-/// Gets the width of the playfield.
-/// </summary>
-/// <param name="playfield">The playfield to get the width from.</param>
-/// <returns>The width of the playfield.</returns>
-let width playfield = playfield.Width
-
-/// <summary>
-/// Gets the height of the playfield.
-/// </summary>
-/// <param name="playfield">The playfield to get the height from.</param>
-/// <returns>The height of the playfield.</returns>
-let height playfield = playfield.Height
-
-/// <summary>
 /// Tries to create an empty playfield with the given width and height.
 /// </summary>
 /// <param name="width">The width of the playfield.</param>
@@ -58,44 +53,29 @@ let tryCreate width height =
       height < minHeight |--> SmallHeight(minHeight, height) ]
     |> List.reduce Error.collect
     |> Result.map (fun _ ->
-        { TilePositions = Set.empty
-          Width = width
-          Height = height })
-
-let private isOutOfBounds playfield tiles =
-    let isOutOfBounds tile =
-        tile.X >= playfield.Width || tile.Y >= playfield.Height
-
-    tiles |> Set.exists isOutOfBounds
-
-let private hasCollisions playfield tiles =
-    tiles |> Set.intersect playfield.TilePositions |> Set.isEmpty |> not
+        Frozen
+            { TilePositions = Set.empty
+              Width = width
+              Height = height })
 
 /// <summary>
-/// Checks if a piece can be placed on the playfield.
+/// Places a tetromino piece on the playfield.
 /// </summary>
-/// <param name="piece">The piece to check.</param>
-/// <param name="playfield">The playfield to check on.</param>
-/// <returns>A result containing unit if the piece can be placed, or an error.</returns>
-let canPlace piece playfield =
-    let tiles = piece |> Piece.tiles
+/// <param name="tetromino">The tetromino to place.</param>
+/// <param name="frozenPlayfield">The frozen playfield to place the piece on.</param>
+/// <returns>A live playfield with the piece placed on it.</returns>
+let spawn tetromino frozenPlayfield =
+    match frozenPlayfield with
+    | Frozen board ->
+        let blockExtent = tetromino |> Tetromino.toBlock Orientation.Up |> Block.extent
 
-    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
-      tiles |> hasCollisions playfield |--> Collision ]
-    |> List.reduce Error.collect
+        let spawnPosition =
+            { X = (board.Width - blockExtent) / 2us
+              Y = (board.Height - blockExtent) / 2us }
 
-/// <summary>
-/// Tries to place a piece on the playfield.
-/// </summary>
-/// <param name="piece">The piece to place.</param>
-/// <param name="playfield">The playfield to place the piece on.</param>
-/// <returns>A result containing the updated playfield or an error.</returns>
-let tryPlace piece playfield =
-    let tiles = piece |> Piece.tiles
+        let piece =
+            { Tetromino = tetromino
+              Orientation = Orientation.Up
+              Position = spawnPosition }
 
-    [ tiles |> isOutOfBounds playfield |--> OutOfBounds
-      tiles |> hasCollisions playfield |--> Collision ]
-    |> List.reduce Error.collect
-    |> Result.map (fun _ ->
-        { playfield with
-            TilePositions = playfield.TilePositions |> Set.union tiles })
+        Live(board, piece)
